@@ -118,9 +118,9 @@ Mission from the Queen 17,Mission,2+,Retrieve any 3 artifacts,,,,,,Mission,Missi
 Mission from the Queen 18,Mission,2+,Survive an Encounter, with The Living Darkness,,,,,Mission,Mission
 Delve Indicator Card,Special,2+,First Delve,Second Delve,Third Delve,,,,Double-sided,Special
 Loan Shark,Special,2+,Charges 20G interest,Breaks legs upon late payment,,,,,Double-sided,Special2
-Lucky' Dhorzan,Expedition Leader,2+,Can avoid one of any hazard,,,,NEUTRAL,,Leader,Adventurer
+'Lucky' Dhorzan,Expedition Leader,2+,Can avoid one of any hazard,,,,NEUTRAL,,Leader,Adventurer
 Lady Minewater,Expedition Leader,2+,Starts with an extra 10G,(and thus always goes first),,,NEUTRAL,,Leader,Adventurer
-Thorgi Silvertongue,Expedition Leader,2+,All adventurers (including peons),cost 2G less to hire initially, (does not affect buyout price),,NEUTRAL,,Leader,Adventurer
+Thorgi Silvertongue,Expedition Leader,2+,All adventurers (excluding peons),cost 5G less to hire initially, (does not affect buyout price),,NEUTRAL,,Leader,Adventurer
 Runecaller Svadi,Expedition Leader,2+,One free VOID of a stack of,any size per delve,,,NEUTRAL,,Leader,Adventurer
 Ulgrim the Auctioneer,Expedition Leader,2+,Earns a bonus of 20 G, on each sold artifact,,,NEUTRAL,,Leader,Adventurer
 Peon,Peon,2+,Can carry 2 treasures,when uninjured,,,NEUTRAL,15G,Normal,Adventurer
