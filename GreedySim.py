@@ -4,6 +4,30 @@ import configparser
 from random import seed
 from random import randint
 
+
+class player:
+    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items):
+        self.recklessness = recklessness
+        self.malice = malice
+        self.greed = greed
+        self.height = height
+        self.gold = gold
+        self.party = party
+        self.health = health
+        self.treasures = treasures
+        self.items = items
+
+class card:
+    def __init__(self,name,type,gamesize,delve1,delve2,delve3,cost,deck):
+        self.name = name
+        self.type = type
+        self.gamesize = gamesize
+        self.delve1 = delve1
+        self.delve2 = delve2
+        self.delve3 = delve3
+        self.cost = cost
+        self.deck = deck
+
 # FUNCTIONS
 
 def readcsv(currentdir): #reads the csv file
@@ -24,15 +48,19 @@ def shuffle(cards):
         shuffcards.append(cards.pop(select-1))
     return shuffcards
 
-def personality(players,player1,player2,player3,player4,player5):
-    # player personalities : [0] is 'recklnessness', [1] is 'malice', [2] is 'greed', [3] is 'height'
-    player1 += '()';player2 += '()';player3 += '()';player4 += '()';player5 += '()'
-    player1person = eval((player1))
-    player2person = eval((player2))
-    player3person = eval((player3))
-    player4person = eval((player4))
-    player5person = eval((player5))
-    playerinfo = [player1person,player2person,player3person,player4person,player5person]
+def personality(players,player1p,player2p,player3p,player4p,player5p):
+    player1p += '()';player2p += '()';player3p += '()';player4p += '()';player5p += '()'
+    player1person = eval((player1p))
+    player1 = player(player1person[0],player1person[1],player1person[2],player1person[3],0,[],[],[],[])
+    player2person = eval((player2p))
+    player2 = player(player2person[0],player2person[1],player2person[2],player2person[3],0,[],[],[],[])
+    player3person = eval((player3p))
+    player3 = player(player3person[0],player3person[1],player3person[2],player3person[3],0,[],[],[],[])
+    player4person = eval((player4p))
+    player4 = player(player4person[0],player4person[1],player4person[2],player4person[3],0,[],[],[],[])
+    player5person = eval((player5p))
+    player5 = player(player5person[0],player5person[1],player5person[2],player5person[3],0,[],[],[],[])
+    playerinfo = [player1,player2,player3,player4,player5]
     return playerinfo
 
 def random():
@@ -45,22 +73,20 @@ def random():
     return personality
 
 def leaderpick(players,playerinfo,leaderdeck):
-    #leaders are stored in playerinfo [5], gold in playerinfo [4]
     playerchoice = ['000'] * players
     for x in range(players):
-        if playerinfo[players-1][2] > 60 and playerinfo[players-1][0] > 50 and '122' in leaderdeck:
-            playerchoice[x] = leaderdeck.pop(leaderdeck.index('122'))
-        elif playerinfo[players-1][2] > 50 and '125' in leaderdeck:
-            playerchoice[x] = leaderdeck.pop(leaderdeck.index('125'))
-        elif playerinfo[players-1][1] > 40 and '121' in leaderdeck:
-            playerchoice[x] = leaderdeck.pop(leaderdeck.index('121'))
+        if playerinfo[x].greed > 60 and playerinfo[x].recklessness > 50 and '122' in leaderdeck:
+            playerinfo[x].party.append(leaderdeck.pop(leaderdeck.index('122')))
+        elif playerinfo[x].greed > 50 and '125' in leaderdeck:
+            playerinfo[x].party.append(leaderdeck.pop(leaderdeck.index('125')))
+        elif playerinfo[x].malice > 40 and '121' in leaderdeck:
+            playerinfo[x].party.append(leaderdeck.pop(leaderdeck.index('121')))
         else:
-            playerchoice[x] = leaderdeck.pop(0)
+            playerinfo[x].party.append(leaderdeck.pop(0))
         if playerchoice[x] == '122':
-            playerinfo[x].append(40)
+            playerinfo[x].gold = 40
         else:
-            playerinfo[x].append(30)
-        playerinfo[x].append(playerchoice[x])
+            playerinfo[x].gold = 30
     return playerinfo
 
 def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): # controls the hiring phase
@@ -85,31 +111,51 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
             tavernspread.append(advanceddeck.pop(-1))
     print ('Tavern contains:')
     for z in tavernspread:
-        print(f"{mastercards[z][0]} ",end='')
+        print(f"{mastercards[z].name} ",end='')
     print('')
     goldlist = []
     for n in range (players):
-        goldlist.append(playerinfo[n][3])
+        goldlist.append(playerinfo[n].gold)
     position = goldlist.index(max(goldlist))
     picklist = [True] * players
     while True in picklist:
         for p in range (len(tavernspread)):
             try:
-                cost = int(mastercards[tavernspread[p-1]][8][:-1]) # retrieves the cost of the card
-                if cost < playerinfo[position][4]: #checks the cost of the card against the goldreserve of the player
-                    playerinfo[position].append(tavernspread.pop(p-1)) #removes the listing from the tavern spread and adds to player info
-                    playerinfo[position][4] -= cost #decreases the player's gold
-                    print(f"player {position+1} buys {mastercards[playerinfo[position][-1]][0]}")
+                cost = int(mastercards[tavernspread[p-1]].cost) # retrieves the cost of the card
+                if cost < playerinfo[position].gold: #checks the cost of the card against the goldreserve of the player
+                    playerinfo[position].party.append(tavernspread.pop(p-1)) #removes the listing from the tavern spread and adds to player info
+                    playerinfo[position].gold -= cost #decreases the player's gold
+                    print(f"player {position+1} buys {mastercards[playerinfo[position].party[-1]].name}")
                     break
+                elif cost == playerinfo[position].gold:
+                    diceroll = randint (1,100)
+                    if diceroll <= playerinfo[position].recklessness:
+                        playerinfo[position].party.append(tavernspread.pop(p - 1))  # removes the listing from the tavern spread and adds to player info
+                        playerinfo[position].gold -= cost  # decreases the player's gold
+                        print(f"player {position + 1} buys {mastercards[playerinfo[position].party[-1]].name}")
+                        break
+                    else:
+                        pass
                 else:
                     picklist[position] = False
             except IndexError:
-                if len(playerinfo[position]) > 5:
+                if len(playerinfo[position].party) > 5:
                     picklist[position] = False
         position += 1
         if position > players-1:
             position = 0
     print('Hiring phase concludes')
+    for j in range (players):
+        print(f"Player {j+1}'s party consists of:")
+        for k in range (len(playerinfo[j].party)):
+            print(f"{mastercards[playerinfo[j].party[k]].name}",end='')
+            if k < len(playerinfo[j].party)-1:
+                print(', ',end='')
+            else:
+                print('.',end='')
+        print(f"\nThey have {playerinfo[j].gold} gold remaining")
+        print('')
+
     pass
 
 def expedition(players,playerinfo,expeditiondeck):
@@ -119,39 +165,36 @@ currentdir = os.getcwd()
 config = configparser.ConfigParser()  # the following lines extract the settings from the config file
 config.read('Settings/config.ini')
 players = int(config['DEFAULT']['players'])
-player1 = config['DEFAULT']['player1']
-player2 = config['DEFAULT']['player2']
-player3 = config['DEFAULT']['player3']
-player4 = config['DEFAULT']['player4']
-player5 = config['DEFAULT']['player5']
+player1p = config['DEFAULT']['player1']
+player2p = config['DEFAULT']['player2']
+player3p = config['DEFAULT']['player3']
+player4p = config['DEFAULT']['player4']
+player5p = config['DEFAULT']['player5']
 
 # This section of the program extracts information about the cards from the csv file and creates dictionaries and arrays for use by the rest of the program
 tabledata = readcsv(currentdir) # reads the CSV file
-processeddata = []
+keydata = []
 counter = 0
-for x in tabledata: # processes the data
+expeditioncards,artefactcards,missioncards,leadercards,peoncards,basiccards,advancedcards,mastercards = {},{},{},{},{},{},{},{}
+for n in tabledata:
     counter += 1
     padding = len(str(len(tabledata))) - len(str(counter))
-    procstring = (f"{padding * '0'}{counter} {x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]},{x[6]},{x[7]},{x[8]},{x[10]}")
-    processeddata.append(procstring)
-tuplelist = []
-expeditioncards,artefactcards,missioncards,leadercards,peoncards,basiccards,advancedcards,mastercards = {},{},{},{},{},{},{},{}
-for n in processeddata:
-    newkey = n[0:3]
-    newentry = n[4:].split(",")
-    if newentry[9] == 'Null' or newentry[9] == 'Treasure' or newentry[9] == 'Item' or newentry[9] == 'Hazard':
+    newkey = (f"{padding * '0'}{counter}")
+    #name, type, gamesize, delve1, delve2, delve3, cost
+    newentry = card(n[0],n[1],n[2],n[5],n[6],n[7],n[8][:-1],n[10])
+    if newentry.deck == 'Null' or newentry.deck == 'Treasure' or newentry.deck == 'Item' or newentry.deck == 'Hazard':
         expeditioncards.update({newkey : newentry})
-    elif newentry[9] == 'Artefact':
+    elif newentry.deck == 'Artefact':
         artefactcards.update({newkey : newentry})
-    elif newentry[9] == 'Mission':
+    elif newentry.deck == 'Mission':
         missioncards.update({newkey : newentry})
-    elif newentry[1] == 'Expedition Leader':
+    elif newentry.type == 'Expedition Leader':
         leadercards.update({newkey : newentry})
-    elif newentry[1] == 'Peon':
+    elif newentry.type == 'Peon':
         peoncards.update({newkey : newentry})
-    elif newentry[1] == 'Basic Adventurer':
+    elif newentry.type == 'Basic Adventurer':
         basiccards.update({newkey: newentry})
-    elif newentry[1] == 'Advanced Adventurer':
+    elif newentry.type == 'Advanced Adventurer':
         advancedcards.update({newkey: newentry})
     mastercards.update({newkey : newentry})
 expeditiondeck = list(expeditioncards.keys())
@@ -161,14 +204,15 @@ leaderdeck = list(leadercards.keys())
 peondeck = list(peoncards.keys())
 basicdeck = list(basiccards.keys())
 advanceddeck = list(advancedcards.keys())
+print(artefactdeck)
 
 #PREGAME
 delveindicator = 1
-playerinfo = personality(players,player1,player2,player3,player4,player5)
+playerinfo = personality(players,player1p,player2p,player3p,player4p,player5p)
 print (f"There are {players} players.")
 playerinfo = leaderpick(players,playerinfo,leaderdeck)
 for n in range (int(players)):
-    print(f"Player {n+1} has {playerinfo[n][0]} recklessness, {playerinfo[n][1]} malice and {playerinfo[n][2]} greed, is {playerinfo[n][3]}cm tall and has picked {mastercards[playerinfo[n][5]][0]}")
+    print(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked {mastercards[playerinfo[n].party[0]].name}.")
 #DELVE1
 print ('Delve 1 Begins')
 expeditiondeck = shuffle(expeditiondeck)
