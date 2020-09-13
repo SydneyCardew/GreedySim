@@ -4,8 +4,9 @@ import configparser
 from random import seed
 from random import randint
 
+# CLASSES
 
-class player:
+class player: #the player class
     def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items):
         self.recklessness = recklessness
         self.malice = malice
@@ -17,7 +18,7 @@ class player:
         self.treasures = treasures
         self.items = items
 
-class card:
+class card: #the card class
     def __init__(self,name,type,gamesize,delve1,delve2,delve3,cost,deck):
         self.name = name
         self.type = type
@@ -28,12 +29,19 @@ class card:
         self.cost = cost
         self.deck = deck
 
+class stack: #the stack class
+    def __init__(self,hazard,reward,items,size):
+        self.hazard = hazard
+        self.reward  = reward
+        self.items = items
+        self.size = size
+
 # FUNCTIONS
 
 def readcsv(currentdir): #reads the csv file
     os.chdir(currentdir) #moves to the main directory
     tabledata = [] #initialises the 'tabledata' list
-    csv.register_dialect('card',delimiter=",", escapechar="*",  quoting=csv.QUOTE_NONE) #creates a csv dialect that seperates files on commas and uses * as an escape character
+    csv.register_dialect('card',delimiter=",",  quoting=csv.QUOTE_NONE) #creates a csv dialect that seperates files on commas
     with open('cards.csv', newline='') as csvfile: #opens the target filename (value storied in settings[1]
         csvobject = csv.reader(csvfile, dialect='card')  #creates a csv object
         for row in csvobject: #reads over all rows
@@ -83,7 +91,7 @@ def leaderpick(players,playerinfo,leaderdeck):
             playerinfo[x].party.append(leaderdeck.pop(leaderdeck.index('121')))
         else:
             playerinfo[x].party.append(leaderdeck.pop(0))
-        if playerchoice[x] == '122':
+        if playerinfo[x].party[0] == '122':
             playerinfo[x].gold = 40
         else:
             playerinfo[x].gold = 30
@@ -91,6 +99,7 @@ def leaderpick(players,playerinfo,leaderdeck):
 
 def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): # controls the hiring phase
     print (f"Hiring phase, delve {delveindicator}.")
+    bl()
     tavernspread = []
     if delveindicator == 1: #sets up the first delve
         for a in range(players*2):
@@ -111,12 +120,18 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
             tavernspread.append(advanceddeck.pop(-1))
     print ('Tavern contains:')
     for z in tavernspread:
-        print(f"{mastercards[z].name} ",end='')
-    print('')
+        print(f"{mastercards[z].name}",end='')
+        if (tavernspread.index(z)) < len(tavernspread)-1:
+            print(', ',end='')
+        else:
+            print('.')
+    bl()
     goldlist = []
     for n in range (players):
         goldlist.append(playerinfo[n].gold)
     position = goldlist.index(max(goldlist))
+    print(f"Hiring commences. Player {position+1} has the most gold ({goldlist[position]}) and is first to pick.")
+    bl()
     picklist = [True] * players
     while True in picklist:
         for p in range (len(tavernspread)):
@@ -144,7 +159,9 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
         position += 1
         if position > players-1:
             position = 0
+    bl()
     print('Hiring phase concludes')
+    bl()
     for j in range (players):
         print(f"Player {j+1}'s party consists of:")
         for k in range (len(playerinfo[j].party)):
@@ -158,8 +175,114 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
 
     pass
 
-def expedition(players,playerinfo,expeditiondeck):
+def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout):
+    roundcounter = 1
+    timer = 1
+    print (f"Expedition phase, delve {delveindicator}.")
+    bl()
+    if delveindicator == 1:
+        heightlist = []
+        for n in range(players):
+            heightlist.append(playerinfo[n].height)
+        position = heightlist.index(max(heightlist))
+        print(f"Play commences. Player {position + 1} is the tallest at {heightlist[position]}cm and thus goes first.")
+    else:
+        if firstout > 0:
+            position = firstout
+            print(f"Play commences. Player {position + 1} was first out of the mine last delve and thus goes first.")
+        elif firstout == 0:
+            position = randint (players)
+            print(f"Play commences. Since all players were lost on the previous delve, they roll dice. Player {position + 1} wins, and thus goes first.")
+    stacks = []
+    for t in range(players):
+        stacks.append([])
+    discardpile = []
+    playing = True
+    while playing:
+        print(f"Round {roundcounter}")
+        bl()
+        stackstats = stats(stacks,delveindicator)
+        print (stackstats)
+        for x in range(players):
+            for y in range(players):
+                try:
+                    carddraw = expeditiondeck.pop(-1)
+                    print(f"Player {position+1} draws {mastercards[carddraw].name}")
+                    if mastercards[carddraw].deck == 'Treasure':
+                        stacks[stackstats[2]].append(carddraw)
+                    if mastercards[carddraw].deck == 'Hazard':
+                        stacks[stackstats[1]].append(carddraw)
+                    if mastercards[carddraw].deck == 'Item':
+                        stacks[stackstats[3]].append(carddraw)
+                    if mastercards[carddraw].deck == 'Null':
+                        stacks[stackstats[1]].append(carddraw)
+                except IndexError:
+                    if timer == 1:
+                        print(f"Player {position+1} reaches the end of the deck, and replenishes it from the discard pile")
+                        discardpile = shuffle(discardpile)
+                        expeditiondeck = discardpile
+                        timer += 1
+                    elif timer == 2:
+                        print(f"Darkness consumes us!")
+                        playing = False
+            for w in (stacks):
+                print(f"stack {stacks.index(w)+1}: ",end='')
+                for x in range(len(w)):
+                    print(f"{mastercards[w[x]].name}", end='')
+                    if x < len(w)-1:
+                        print(', ',end='')
+                    else:
+                        print('. ',end='')
+                print(f"Size: {len(w)}")
+            for a in range (len(stacks)):
+                if len(stacks[a]) > 6:
+                    for x in range (len(stacks[a])):
+                        discardpile.append(stacks[a][x])
+                    stacks[a] = []
+            position += 1
+            if position > players - 1:
+                position = 0
+        input("continue...")
+
+        roundcounter += 1
+    bl()
     pass
+
+def takestack(a):
+    pass
+
+def stats(stacks,delveindicator):#this routine helps the AI of the game make judgements about where to put cards
+    delvestring = 'delve'+str(delveindicator)
+    statblock = []
+    hazardstats = [0] * len(stacks)
+    rewardstats = [0] * len(stacks)
+    itemnum = [0] * len(stacks)
+    for n in range(len(stacks)):
+        if stacks[n] == []:
+            substats = stack(randint(1,3),randint(1,3),randint(1,3),len(stacks[n]))
+            hazardstats[n] = substats.hazard
+            rewardstats[n] = substats.reward
+            itemnum[n] = substats.items
+            statblock.append(substats)
+        else:
+            hazard = 0
+            reward = 0
+            items = 0
+            for x in range(len(stacks[n])):
+                if mastercards[stacks[n][x]].deck == 'Hazard':
+                    hazard += sum([int(s) for s in getattr(mastercards[stacks[n][x]],delvestring) if s.isdigit()])
+            substats = stack(hazard, reward,items,len(stacks[n]))
+            hazardstats[n] = hazard
+            rewardstats[n] = reward
+            itemnum[n] = items
+            statblock.append(substats)
+    stackstats = [statblock,hazardstats.index(min(hazardstats)),rewardstats.index(max(rewardstats)),itemnum.index(min(itemnum))]
+    return stackstats
+
+def bl():
+    print('')
+
+# INITIALISATION
 
 currentdir = os.getcwd()
 config = configparser.ConfigParser()  # the following lines extract the settings from the config file
@@ -182,21 +305,26 @@ for n in tabledata:
     newkey = (f"{padding * '0'}{counter}")
     #name, type, gamesize, delve1, delve2, delve3, cost
     newentry = card(n[0],n[1],n[2],n[5],n[6],n[7],n[8][:-1],n[10])
-    if newentry.deck == 'Null' or newentry.deck == 'Treasure' or newentry.deck == 'Item' or newentry.deck == 'Hazard':
-        expeditioncards.update({newkey : newentry})
-    elif newentry.deck == 'Artefact':
-        artefactcards.update({newkey : newentry})
-    elif newentry.deck == 'Mission':
-        missioncards.update({newkey : newentry})
-    elif newentry.type == 'Expedition Leader':
-        leadercards.update({newkey : newentry})
-    elif newentry.type == 'Peon':
-        peoncards.update({newkey : newentry})
-    elif newentry.type == 'Basic Adventurer':
-        basiccards.update({newkey: newentry})
-    elif newentry.type == 'Advanced Adventurer':
-        advancedcards.update({newkey: newentry})
-    mastercards.update({newkey : newentry})
+    if players == 2 and newentry.gamesize == '3+' or newentry.gamesize == '4+':
+        pass
+    elif players == 3 and newentry.gamesize == '4+':
+        pass
+    else:
+        if newentry.deck == 'Null' or newentry.deck == 'Treasure' or newentry.deck == 'Item' or newentry.deck == 'Hazard':
+            expeditioncards.update({newkey : newentry})
+        elif newentry.deck == 'Artefact':
+            artefactcards.update({newkey : newentry})
+        elif newentry.deck == 'Mission':
+            missioncards.update({newkey : newentry})
+        elif newentry.type == 'Expedition Leader':
+            leadercards.update({newkey : newentry})
+        elif newentry.type == 'Peon':
+            peoncards.update({newkey : newentry})
+        elif newentry.type == 'Basic Adventurer':
+            basiccards.update({newkey: newentry})
+        elif newentry.type == 'Advanced Adventurer':
+            advancedcards.update({newkey: newentry})
+        mastercards.update({newkey : newentry})
 expeditiondeck = list(expeditioncards.keys())
 artefactdeck = list(artefactcards.keys())
 missiondeck = list(missioncards.keys())
@@ -204,17 +332,21 @@ leaderdeck = list(leadercards.keys())
 peondeck = list(peoncards.keys())
 basicdeck = list(basiccards.keys())
 advanceddeck = list(advancedcards.keys())
-print(artefactdeck)
+print(expeditiondeck)
 
 #PREGAME
 delveindicator = 1
+firstout = 0
 playerinfo = personality(players,player1p,player2p,player3p,player4p,player5p)
 print (f"There are {players} players.")
 playerinfo = leaderpick(players,playerinfo,leaderdeck)
+bl()
 for n in range (int(players)):
     print(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked {mastercards[playerinfo[n].party[0]].name}.")
+bl()
 #DELVE1
 print ('Delve 1 Begins')
+bl()
 expeditiondeck = shuffle(expeditiondeck)
 artefactdeck = shuffle(artefactdeck)
 artefactadd = artefactdeck.pop(0)
@@ -223,7 +355,4 @@ expeditiondeck = shuffle(expeditiondeck)
 peondeck = shuffle(peondeck)
 basicdeck = shuffle(basicdeck)
 partylist = tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator)
-delvelist = expedition(players,playerinfo,expeditiondeck)
-
-
-
+delvelist = expedition(players,playerinfo,expeditiondeck,delveindicator,firstout)
