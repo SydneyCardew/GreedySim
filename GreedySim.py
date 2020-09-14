@@ -7,7 +7,7 @@ from random import randint
 # CLASSES
 
 class player: #the player class
-    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items):
+    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items,capacity,mitigationEN,mitigationST,mitigationMA,mitigationMY):
         self.recklessness = recklessness
         self.malice = malice
         self.greed = greed
@@ -17,6 +17,26 @@ class player: #the player class
         self.health = health
         self.treasures = treasures
         self.items = items
+        self.capacity = capacity
+        self.mitigationEN = mitigationEN
+        self.mitigationST = mitigationST
+        self.mitigationMA = mitigationMA
+        self.mitigationMY = mitigationMY
+
+    def healthinit(self):
+        for x in range (len(self.party)):
+            self.health.append(2)
+
+    def statset(self):
+        self.capacity = 0
+        self.mitigationEN = 0
+        self.mitigationST = 0
+        self.mitigationMA = 0
+        self.mitigationMY = 0
+        for x in self.party:
+            print(x)
+
+
 
 class card: #the card class
     def __init__(self,name,type,gamesize,delve1,delve2,delve3,cost,deck):
@@ -59,15 +79,15 @@ def shuffle(cards):
 def personality(players,player1p,player2p,player3p,player4p,player5p):
     player1p += '()';player2p += '()';player3p += '()';player4p += '()';player5p += '()'
     player1person = eval((player1p))
-    player1 = player(player1person[0],player1person[1],player1person[2],player1person[3],0,[],[],[],[])
+    player1 = player(player1person[0],player1person[1],player1person[2],player1person[3],0,[],[],[],[],0,0,0,0,0)
     player2person = eval((player2p))
-    player2 = player(player2person[0],player2person[1],player2person[2],player2person[3],0,[],[],[],[])
+    player2 = player(player2person[0],player2person[1],player2person[2],player2person[3],0,[],[],[],[],0,0,0,0,0)
     player3person = eval((player3p))
-    player3 = player(player3person[0],player3person[1],player3person[2],player3person[3],0,[],[],[],[])
+    player3 = player(player3person[0],player3person[1],player3person[2],player3person[3],0,[],[],[],[],0,0,0,0,0)
     player4person = eval((player4p))
-    player4 = player(player4person[0],player4person[1],player4person[2],player4person[3],0,[],[],[],[])
+    player4 = player(player4person[0],player4person[1],player4person[2],player4person[3],0,[],[],[],[],0,0,0,0,0)
     player5person = eval((player5p))
-    player5 = player(player5person[0],player5person[1],player5person[2],player5person[3],0,[],[],[],[])
+    player5 = player(player5person[0],player5person[1],player5person[2],player5person[3],0,[],[],[],[],0,0,0,0,0)
     playerinfo = [player1,player2,player3,player4,player5]
     return playerinfo
 
@@ -172,14 +192,14 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
                 print('.',end='')
         print(f"\nThey have {playerinfo[j].gold} gold remaining")
         print('')
-
-    pass
+    return playerinfo
 
 def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout):
     roundcounter = 1
     timer = 1
     print (f"Expedition phase, delve {delveindicator}.")
     bl()
+    position = 1
     if delveindicator == 1:
         heightlist = []
         for n in range(players):
@@ -201,30 +221,55 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout):
     while playing:
         print(f"Round {roundcounter}")
         bl()
-        stackstats = stats(stacks,delveindicator)
-        print (stackstats)
         for x in range(players):
+            stackstats = stats(stacks, delveindicator)
+            print(stackstats)
+            for h in range(len(stackstats[0])):
+                print(stackstats[0][h].hazard, stackstats[0][h].reward, stackstats[0][h].items)
             for y in range(players):
                 try:
                     carddraw = expeditiondeck.pop(-1)
                     print(f"Player {position+1} draws {mastercards[carddraw].name}")
+                    emptystack = False
+                    for z in range (len(stacks)):
+                        if stacks[z] == []:
+                            emptystack = True
+                            emptyindex = z
                     if mastercards[carddraw].deck == 'Treasure':
-                        stacks[stackstats[2]].append(carddraw)
+                        if emptystack == True:
+                            stacks[emptyindex].append(carddraw)
+                            emptystack = False
+                        else:
+                            stacks[stackstats[2]].append(carddraw)
                     if mastercards[carddraw].deck == 'Hazard':
-                        stacks[stackstats[1]].append(carddraw)
+                        if emptystack == True:
+                            stacks[emptyindex].append(carddraw)
+                            emptystack = False
+                        else:
+                            stacks[stackstats[1]].append(carddraw)
                     if mastercards[carddraw].deck == 'Item':
-                        stacks[stackstats[3]].append(carddraw)
+                        if emptystack == True:
+                            stacks[emptyindex].append(carddraw)
+                            emptystack = False
+                        else:
+                          stacks[stackstats[3]].append(carddraw)
                     if mastercards[carddraw].deck == 'Null':
-                        stacks[stackstats[1]].append(carddraw)
+                        if emptystack == True:
+                            stacks[emptyindex].append(carddraw)
+                            emptystack = False
+                        else:
+                           stacks[stackstats[1]].append(carddraw)
                 except IndexError:
                     if timer == 1:
-                        print(f"Player {position+1} reaches the end of the deck, and replenishes it from the discard pile")
+                        print(f"Player {position+1} reaches the end of the deck, and replenishes it from the discard pile. The Darkness Hungers!")
                         discardpile = shuffle(discardpile)
-                        expeditiondeck = discardpile
+                        for x in range (len(discardpile)):
+                            expeditiondeck.append(discardpile.pop(-1))
                         timer += 1
                     elif timer == 2:
                         print(f"Darkness consumes us!")
                         playing = False
+                        break
             for w in (stacks):
                 print(f"stack {stacks.index(w)+1}: ",end='')
                 for x in range(len(w)):
@@ -235,20 +280,22 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout):
                         print('. ',end='')
                 print(f"Size: {len(w)}")
             for a in range (len(stacks)):
-                if len(stacks[a]) > 6:
+                if len(stacks[a]) >= 6:
                     for x in range (len(stacks[a])):
                         discardpile.append(stacks[a][x])
                     stacks[a] = []
             position += 1
             if position > players - 1:
                 position = 0
+        print (f"Discard pile: {len(discardpile)}")
+        print (f"Deck: {len(expeditiondeck)}")
         input("continue...")
-
         roundcounter += 1
+
     bl()
     pass
 
-def takestack(a):
+def takestack(stacka,position,playerinfo):
     pass
 
 def stats(stacks,delveindicator):#this routine helps the AI of the game make judgements about where to put cards
@@ -271,6 +318,13 @@ def stats(stacks,delveindicator):#this routine helps the AI of the game make jud
             for x in range(len(stacks[n])):
                 if mastercards[stacks[n][x]].deck == 'Hazard':
                     hazard += sum([int(s) for s in getattr(mastercards[stacks[n][x]],delvestring) if s.isdigit()])
+                    print(hazard)
+                elif mastercards[stacks[n][x]].deck == 'Treasure':
+                    reward += int(getattr(mastercards[stacks[n][x]],delvestring)[:-1])
+                elif mastercards[stacks[n][x]].deck == 'Item':
+                    items += 1
+                else:
+                    pass
             substats = stack(hazard, reward,items,len(stacks[n]))
             hazardstats[n] = hazard
             rewardstats[n] = reward
@@ -344,6 +398,8 @@ bl()
 for n in range (int(players)):
     print(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked {mastercards[playerinfo[n].party[0]].name}.")
 bl()
+print(playerinfo[0].party)
+input('continue...')
 #DELVE1
 print ('Delve 1 Begins')
 bl()
@@ -354,5 +410,7 @@ expeditiondeck.append(artefactadd)
 expeditiondeck = shuffle(expeditiondeck)
 peondeck = shuffle(peondeck)
 basicdeck = shuffle(basicdeck)
-partylist = tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator)
+playerinfo = tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator)
+print(playerinfo[0].party)
+input('continue...')
 delvelist = expedition(players,playerinfo,expeditiondeck,delveindicator,firstout)
