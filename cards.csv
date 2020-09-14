@@ -148,20 +148,20 @@ Opportunist,Basic Adventurer,2+,Can pick up one treasure,during the escape,,,MER
 Archaeologist,Basic Adventurer,2+,Can carry one extra artefact.,Half cost if you have an artefact.,,,NEUTRAL,20G,Normal,Adventurer
 Bowdwarf,Basic Adventurer,2+,Avoids 1 MA hazard,,,,STEADFAST,25G,Normal,Adventurer
 Swordsdwarf,Basic Adventurer,2+,Avoids 1 MA hazard,,,,MERCENARY,20G,Normal,Adventurer
-Pistolier,Basic Adventurer,2+,Avoids up to 2 MA hazard,,,,NEUTRAL,40G,Normal,Adventurer
+Pistolier,Basic Adventurer,2+,Avoids 2 MA hazard,,,,NEUTRAL,40G,Normal,Adventurer
 Sapper,Basic Adventurer,2+,Avoids 1 ST hazard,,,,MERCENARY,20G,Normal,Adventurer
 Miner,Basic Adventurer,2+,Avoids 1 ST hazard,,,,STEADFAST,25G,Normal,Adventurer
-Engineer,Basic Adventurer,2+,Avoids up to 2 ST hazard,,,,NEUTRAL,40G,Normal,Adventurer
+Engineer,Basic Adventurer,2+,Avoids 2 ST hazard,,,,NEUTRAL,40G,Normal,Adventurer
 Dowser,Basic Adventurer,2+,Avoids 1 EN hazard,,,,STEADFAST,25G,Normal,Adventurer
 Thief,Basic Adventurer,2+,Avoids 1 EN hazard,,,,MERCENARY,20G,Normal,Adventurer
-Cartographer,Basic Adventurer,2+,Avoids up to 2 EN hazard,,,,NEUTRAL,40G,Normal,Adventurer
+Cartographer,Basic Adventurer,2+,Avoids 2 EN hazard,,,,NEUTRAL,40G,Normal,Adventurer
 Runesmith,Basic Adventurer,2+,Avoids 1 MY hazard,,,,STEADFAST,25G,Normal,Adventurer
 Mage,Basic Adventurer,2+,Avoids 1 MY hazard,,,,MERCENARY,20G,Normal,Adventurer
 Arcanist,Basic Adventurer,2+,Avoids 1 MY hazard,,,,NEUTRAL,40G,Normal,Adventurer
-Architect,Advanced Adventurer,2+,Avoids up to 3 ST hazard,,,,STEADFAST,50G,Normal,Adventurer
-Archmage,Advanced Adventurer,2+,Avoids up to 3 MY hazard,,,,STEADFAST,50G,Normal,Adventurer
-Deep Ranger,Advanced Adventurer,2+,Avoids up to 3 EN hazard,,,,STEADFAST,50G,Normal,Adventurer
-Musketeer,Advanced Adventurer,2+,Avoids up to 3 MA hazard,,,,STEADFAST,50G,Normal,Adventurer
+Architect,Advanced Adventurer,2+,Avoids 3 ST hazard,,,,STEADFAST,50G,Normal,Adventurer
+Archmage,Advanced Adventurer,2+,Avoids 3 MY hazard,,,,STEADFAST,50G,Normal,Adventurer
+Deep Ranger,Advanced Adventurer,2+,Avoids 3 EN hazard,,,,STEADFAST,50G,Normal,Adventurer
+Musketeer,Advanced Adventurer,2+,Avoids 3 MA hazard,,,,STEADFAST,50G,Normal,Adventurer
 Jack of All Trades,Advanced Adventurer,2+,Avoids two of any type of hazard,,,,MERCENARY,50G,Normal,Adventurer
 Merchant Princess,Advanced Adventurer,2+,Each treasure returned to the surface, is worth an extra 10\20\30G ,depending on depth.,,MERCENARY,50G,Normal,Adventurer
 Runelorist,Advanced Adventurer,2+,Can carry two Artifacts,in addition to treasure,,,NEUTRAL,50G,Normal,Adventurer
