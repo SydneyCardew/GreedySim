@@ -536,6 +536,26 @@ def pathpadder(lognum,logincrement): #this routine pads out the number in the lo
     padstring = '0' * pad
     return padstring
 
+def loginit(version,lognum):
+    now = datetime.now()
+    smalltime = now.strftime("%H:%M:%S")
+    today = str(date.today())
+    try:
+        os.makedirs(f"{currentdir}/Logs/")
+    except OSError as exc:  # handles the error if the directory already exists
+        if exc.errno != errno.EEXIST:
+            raise
+        pass
+    logincrement = 1
+    padstring = pathpadder (lognum,logincrement)
+    while os.path.exists(f"{currentdir}/Logs/log {today} - {padstring}{logincrement}.txt"):
+        logincrement += 1
+    padstring = pathpadder (lognum,logincrement)
+    log = open(f"{currentdir}/Logs/log {today} - {padstring}{logincrement}.txt", "w")
+    log.write(f"GreedySim version {version}. Log number {logincrement}. Date: {today}. Time: {smalltime}\n")
+    log.write(f"\'Too Greedily, Too Deep\' copyright Sydney Cardew.\n")
+    return log
+
 # INITIALISATION
 # config read
 currentdir = os.getcwd()
@@ -598,29 +618,9 @@ for n in tabledata:
 playing = True
 playcount = 0
 while playing:
-
-    # START LOG
-    now = datetime.now()
-    smalltime = now.strftime("%H:%M:%S")
-    today = str(date.today())
-    try:
-        os.makedirs(f"{currentdir}/Logs/")
-    except OSError as exc:  # handles the error if the directory already exists
-        if exc.errno != errno.EEXIST:
-            raise
-        pass
-    logincrement = 1
-    padstring = pathpadder (lognum,logincrement)
-    while os.path.exists(f"{currentdir}/Logs/log {today} - {padstring}{logincrement}.txt"):
-        logincrement += 1
-    padstring = pathpadder (lognum,logincrement)
-    log = open(f"{currentdir}/Logs/log {today} - {padstring}{logincrement}.txt", "w")
-    log.write(f"GreedySim version {version}. Log number {logincrement}. Date: {today}. Time: {smalltime}\n")
-    log.write(f"\'Too Greedily, Too Deep\' copyright Sydney Cardew.\n")
-    bl(2)
+    log = loginit(version,lognum)
 
     #DECK SETUP
-
     expeditiondeck = list(expeditioncards.keys())
     artefactdeck = list(artefactcards.keys())
     missiondeck = list(missioncards.keys())
