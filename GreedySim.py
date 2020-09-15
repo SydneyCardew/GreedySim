@@ -344,15 +344,15 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout):
             if playing == False:
                 pass
             else:
-                for w in (stacks):
-                    log.write(f"stack {stacks.index(w)+1}: ")
-                    for x in range(len(w)):
-                        log.write(f"{mastercards[w[x]].name}")
-                        if x < len(w)-1:
+                for playstack in (stacks):
+                    log.write(f"stack {stacks.index(playstack)+1}: ")
+                    for x in range(len(playstack)):
+                        log.write(f"{mastercards[playstack[x]].name}")
+                        if x < len(playstack)-1:
                             log.write(', ')
                         else:
                             log.write('.')
-                    log.write(f"Size: {len(w)}\n")
+                    log.write(f"Size: {len(playstack)}\n")
                 for a in range (len(stacks)):
                     if len(stacks[a]) >= 6:
                         stackstats = stats(stacks, delveindicator)
@@ -575,7 +575,7 @@ parser = argparse.ArgumentParser(prog="GreedySim") # the subsequent lines contai
 parser.add_argument("-m", "--multiple", action='store_true', help = "runs multiple times (set in config.ini)")
 parser.add_argument("-v","--version", action='version',version=version)
 args = parser.parse_args()
-if args.multiple:
+if args.multiple: #sets to run the simulation multiple times in a row
     runs = timesnum
 else:
     runs = 1
@@ -592,9 +592,9 @@ for n in tabledata:
     newkey = (f"{padding * '0'}{counter}")
     #name, type, gamesize, delve1, delve2, delve3, cost
     newentry = card(n[0],n[1],n[2],n[3],n[5],n[6],n[7],n[8][:-1],n[10])
-    if players == 2 and newentry.gamesize == '3+' or newentry.gamesize == '4+':
+    if players == 2 and newentry.gamesize == '3+' or newentry.gamesize == '4+': # removes the appropriate cards for a 2 player game
         pass
-    elif players == 3 and newentry.gamesize == '4+':
+    elif players == 3 and newentry.gamesize == '4+': # removes the appropriate cards for a 3 player game
         pass
     else:
         if newentry.deck == 'Null' or newentry.deck == 'Treasure' or newentry.deck == 'Item' or newentry.deck == 'Hazard':
@@ -618,6 +618,7 @@ for n in tabledata:
 playing = True
 playcount = 0
 while playing:
+
     log = loginit(version,lognum)
 
     #DECK SETUP
