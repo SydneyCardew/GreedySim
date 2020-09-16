@@ -40,8 +40,10 @@ Description: Aggregate data collection, mass logging improvements, code-refactor
     * The Loan Shark
     * The Necromancer, Medic and other special power cards
     
-* Institute a 'correct' solution for various currently existing workarounds  
+* Institute a 'correct' solution for various currently existing workarounds 
+* ~~Fix the Main Expedition loop~~ - *complete*
 * Collect aggregate data about multiple simulations - *started*    
+* Improve log formatting
 * Improve AI and make more decisions governed by AI personalities     
-* More AI personality settings    
+* More AI personality settings - *started*
 * Refactor code for readability and consistency and improve commenting - *started*
