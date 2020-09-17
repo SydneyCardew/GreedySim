@@ -12,7 +12,8 @@ from random import seed
 # CLASSES
 
 class player: #the player class
-    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items,capacity,burden,mitigationEN,mitigationST,mitigationMA,mitigationMY,totalhealth):
+    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items,capacity,burden,
+                 mitigationEN,mitigationST,mitigationMA,mitigationMY,totalhealth):
         self.recklessness = recklessness
         self.malice = malice
         self.greed = greed
@@ -145,15 +146,20 @@ def shuffle(cards): #card shuffling routine
 def personality(players,player1p,player2p,player3p,player4p,player5p): #Initialises the player classes and calls the personality routines
     player1p += '()';player2p += '()';player3p += '()';player4p += '()';player5p += '()'
     player1person = eval((player1p))
-    player1 = player(player1person[0],player1person[1],player1person[2],player1person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+    player1 = player(player1person[0],player1person[1],player1person[2],
+                     player1person[3],0,[],[],[],[],0,0,0,0,0,0,0)
     player2person = eval((player2p))
-    player2 = player(player2person[0],player2person[1],player2person[2],player2person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+    player2 = player(player2person[0],player2person[1],player2person[2],
+                     player2person[3],0,[],[],[],[],0,0,0,0,0,0,0)
     player3person = eval((player3p))
-    player3 = player(player3person[0],player3person[1],player3person[2],player3person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+    player3 = player(player3person[0],player3person[1],player3person[2],
+                     player3person[3],0,[],[],[],[],0,0,0,0,0,0,0)
     player4person = eval((player4p))
-    player4 = player(player4person[0],player4person[1],player4person[2],player4person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+    player4 = player(player4person[0],player4person[1],player4person[2],
+                     player4person[3],0,[],[],[],[],0,0,0,0,0,0,0)
     player5person = eval((player5p))
-    player5 = player(player5person[0],player5person[1],player5person[2],player5person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+    player5 = player(player5person[0],player5person[1],player5person[2],
+                     player5person[3],0,[],[],[],[],0,0,0,0,0,0,0)
     playerinfo = [player1,player2,player3,player4,player5]
     return playerinfo
 
@@ -303,7 +309,8 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
     for j in range (len(playerinfo)): # reads out party make-ups
         log.write(f"Player {j+1}'s party consists of:\n")
         for dwarf in range (len(playerinfo[j].party)):
-            log.write(f"{mastercards[playerinfo[j].party[dwarf]].name} | ({playerinfo[j].health[dwarf]}) Health")
+            log.write(f"{mastercards[playerinfo[j].party[dwarf]].name} "
+                      f"| ({playerinfo[j].health[dwarf]}) Health")
             if dwarf < len(playerinfo[j].party)-1:
                 log.write(', ')
             else:
@@ -328,14 +335,17 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
         for n in range(players):
             heightlist.append(playerinfo[n].height)
         position = heightlist.index(max(heightlist))
-        log.write(f"Play commences. Player {playlist[position]} is the tallest at {heightlist[position]}cm and thus goes first.\n")
+        log.write(f"Play commences. Player {playlist[position]} is the tallest "
+                  f"at {heightlist[position]}cm and thus goes first.\n")
     else:
         if firstout > 0:
             position = firstout
-            log.write(f"Play commences. Player {playlist[position]} was first out of the mine last delve and thus goes first.\n")
+            log.write(f"Play commences. Player {playlist[position]} was first "
+                      f"out of the mine last delve and thus goes first.\n")
         elif firstout == 0:
             position = randint(0,players-1)
-            log.write(f"Play commences. Since all players were lost on the previous delve, they roll dice. Player {playlist[position]} wins, and thus goes first.\n")
+            log.write(f"Play commences. Since all players were lost on the previous delve, "
+                      f"they roll dice. Player {playlist[position]} wins, and thus goes first.\n")
     stacks = []
     for t in range(players): # creates an appropriate number of empty lists to hold stacks
         stacks.append([])
@@ -388,7 +398,8 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
             except IndexError:
                 if timer == 1:
                     if len(playlist) > 0:
-                        log.write(f"Player {playlist[position]} reaches the end of the deck, and replenishes it from the discard pile. The Darkness Hungers!\n")
+                        log.write(f"Player {playlist[position]} reaches the end of the deck, and "
+                                  f"replenishes it from the discard pile. The Darkness Hungers!\n")
                         discardpile = shuffle(discardpile)
                         for x in range (len(discardpile)):
                             expeditiondeck.append(discardpile.pop(-1))
@@ -452,12 +463,14 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
                 if playerinfo[playlist[position]].totalhealth > 0:
                     pass
                 elif playerinfo[playlist[position]].totalhealth == 0:
-                    log.write (f"Player {playlist[position]}'s party has been wiped out! They limp back to the surface...\n")
+                    log.write (f"Player {playlist[position]}'s party has been wiped out! "
+                               f"They limp back to the surface...\n")
                     playlist.pop(position)
             except IndexError:
                 pass
             try:
-                if (playerinfo[playlist[position]].capacity - playerinfo[playlist[position]].burden) < 2 and sum(playerinfo[playlist[position]-1].health) > 0:
+                if (playerinfo[playlist[position]].capacity - playerinfo[playlist[position]].burden) < 2 \
+                        and sum(playerinfo[playlist[position]-1].health) > 0:
                     log.write (f"Player {playlist[position]} attempts to escape the dungeon!\n")
                     discardpile = escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delveindicator)
                     escapedcount += 1
@@ -651,7 +664,8 @@ def takestack(stacka,stackid,position,playerinfo,stackstats,playlist): #This fun
             except IndexError:
                 pass
         playerinfo[playlist[position]].setburden()
-        log.write (f"Player has {playerinfo[playlist[position]].capacity} total capacity and is carrying {playerinfo[playlist[position]].burden} loot.\n")
+        log.write (f"Player has {playerinfo[playlist[position]].capacity} total capacity "
+                   f"and is carrying {playerinfo[playlist[position]].burden} loot.\n")
         while playerinfo[playlist[position]].burden > playerinfo[playlist[position]].capacity:
             log.write(f"Player drops {mastercards[playerinfo[playlist[position]].treasures[-1]].name}!")
             playerinfo[playlist[position]].treasures.pop()
@@ -771,7 +785,7 @@ def pathpadder(lognum,logincrement): #this routine pads out the number in the lo
     padstring = '0' * pad
     return padstring
 
-def loginit(currentdir,version,lognum,runs,playcount,setpath):
+def loginit(currentdir,version,lognum,runs,playcount,setpath,randseed):
     now = datetime.now()
     smalltime = now.strftime("%H:%M:%S")
     today = str(date.today())
@@ -807,10 +821,13 @@ def loginit(currentdir,version,lognum,runs,playcount,setpath):
     else:
         log.write('\n')
     log.write(f"\'Too Greedily, Too Deep\' copyright Sydney Cardew.\n")
+    log.write(f"\nSeed: {randseed}\n")
     return [log,pathmod,today,padstring,logincrement]
 
 # INITIALISATION
+
 # config read
+
 currentdir = os.getcwd()
 config = configparser.ConfigParser()  # the following lines extract the settings from the config file
 config.read('Settings/config.ini')
@@ -824,19 +841,27 @@ player5p = config['DEFAULT']['player5']
 lognum = int(config['DEFAULT']['lognumber'])
 timesnum = int(config['DEFAULT']['timestorun'])
 multimode = config['DEFAULT']['multimode']
+setseed = config['DEFAULT']['setseed']
+
 # arguments
+
 parser = argparse.ArgumentParser(prog="GreedySim") # the subsequent lines contain the command line arguments
 parser.add_argument("-m", "--multiple", action='store_true', help = "runs multiple times (set in config.ini)")
-parser.add_argument("-r", "--truerandom", action='store_true',help = "initialises GreedySim with a truly random number from random.org")
-parser.add_argument("-v","--version", action='version',version=version)
+rangroup = parser.add_mutually_exclusive_group()
+rangroup.add_argument("-r", "--truerandom", action='store_true',help = "initialises GreedySim with a truly random number from random.org")
+rangroup.add_argument("-s", "--setseed", action = 'store_true',help = "initialises GreedySim with a seed from config.ini")
+parser.add_argument("-v", "--version", action='version',version=version)
 args = parser.parse_args()
 if args.multiple: #sets to run the simulation multiple times in a row
     runs = timesnum
 else:
     runs = 1
-if args.truerandom:
+if args.truerandom: #gets true random number
     randseed = seedget()
     seed(randseed)
+elif args.setseed:
+    randseed = setseed
+    seed(setseed)
 else:
     seed()
 
@@ -914,7 +939,7 @@ deaths,totaltreasure = 0,0
 roundarray = []
 while playing:
 
-    pathpack = loginit(currentdir,version,lognum,runs,playcount,setpath)
+    pathpack = loginit(currentdir,version,lognum,runs,playcount,setpath,randseed)
     log, pathmod,today,padstring,logincrement = pathpack[0],pathpack[1],pathpack[2],pathpack[3],pathpack[4]
     setpath = True
 
@@ -952,7 +977,9 @@ while playing:
     playerinfo = personality(players,player1p,player2p,player3p,player4p,player5p)
     playerinfo = leaderpick(players,playerinfo,leaderdeck)
     for n in range (int(players)):
-        log.write(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked {mastercards[playerinfo[n].party[0]].name}.\n")
+        log.write(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} "
+                  f"malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked "
+                  f"{mastercards[playerinfo[n].party[0]].name}.\n")
 
     # DELVE 1
 
@@ -980,7 +1007,7 @@ while playing:
     delveindicator += 1
     expeditiondeck = shuffle(expeditiondeck)
     artefactdeck = shuffle(artefactdeck)
-    for x in range (1,3):
+    for x in range (1,4):
         artefactadd = artefactdeck.pop(0)
     expeditiondeck.append(artefactadd)
     expeditiondeck = shuffle(expeditiondeck)
@@ -1013,7 +1040,7 @@ while playing:
     resolvestats = resolve(playerinfo,delveindicator,deaths,totaltreasure,roundcounter,roundarray)
     deaths,totaltreasure,roundarray = resolvestats[0],resolvestats[1],resolvestats[2]
     log.close()
-    if runs > 1:
+    if runs > 1: #handles tidying up the loop in -m mode
         roundaverage = sum(roundarray)/len(roundarray) # gets the mean of the number of rounds played
         roundaverage2sf = "{:.2f}".format(roundaverage) # rounds the mean to two decimal places
         gamediff = len(str(runs)) - len(str(playcount))
@@ -1023,7 +1050,7 @@ while playing:
         summaryarray.append(summary)
         deaths,totaltreasure = 0,0
         roundarray.clear()
-    if playcount == runs:
+    if playcount == runs: #ends the loop in -m mode
         playing = False
 
 # WRITE MASS LOG

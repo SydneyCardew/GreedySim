@@ -28,7 +28,7 @@ GreedySim is an (as of version 1.0.0 still crude and incomplete) self-playing ve
 Description: First working version of GreedySim
 
 **Version 1.1.0**: 16/09/2020    
-Description: Aggregate data collection, mass logging improvements, code-refactoring, improved documentation, escape sequence and voiding, many crashes and errors fixed or mitigated, implemented some special powers.
+Description: Aggregate data collection, mass logging improvements, logging format improvements, code-refactoring, improved documentation, escape sequence and voiding, many crashes and errors fixed or mitigated, implemented some special powers.
 
 ####Future Development Goals:    
 
@@ -43,7 +43,7 @@ Description: Aggregate data collection, mass logging improvements, code-refactor
 * Institute a 'correct' solution for various currently existing workarounds 
 * ~~Fix the Main Expedition loop~~ - *complete*
 * Collect aggregate data about multiple simulations - *started*    
-* Improve log formatting
+* Improve log formatting - *started*
 * Improve AI and make more decisions governed by AI personalities     
 * More AI personality settings - *started*
 * Refactor code for readability and consistency and improve commenting - *started*
