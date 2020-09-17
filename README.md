@@ -27,15 +27,15 @@ GreedySim is an (as of version 1.0.0 still crude and incomplete) self-playing ve
 **Version 1.0.0**: 15/09/2020   
 Description: First working version of GreedySim
 
-**Version 1.0.1**: 16/09/2020    
-Description: Aggregate data collection, mass logging improvements, code-refactoring, improved documentation,implemented some special powers.
+**Version 1.1.0**: 16/09/2020    
+Description: Aggregate data collection, mass logging improvements, code-refactoring, improved documentation, escape sequence and voiding, many crashes and errors fixed or mitigated, implemented some special powers.
 
 ####Future Development Goals:    
 
 * Fully implement game rules and elements not currently implemented:      
-    * Voiding stacks
+    * ~~Voiding stacks~~
     * Item cards
-    * The Escape Sequence
+    * The Escape Sequence - *largely implemented*
     * Missions
     * The Loan Shark
     * The Necromancer, Medic and other special power cards

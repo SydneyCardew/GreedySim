@@ -294,13 +294,12 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
     log.write('Hiring phase concludes.\n')
     bl(1)
     for i in range (len(tavernspread)): #returns the unpicked cards to their correct decks
-        returncard = mastercards[tavernspread[i]]
-        if returncard.type == 'Peon':
-            peondeck.append(returncard)
-        if returncard.type == 'Basic Adventurer':
-            basicdeck.append(returncard)
-        if returncard.type == 'Advanced Adventurer':
-            advanceddeck.append(returncard)
+        if mastercards[tavernspread[i]].type == 'Peon':
+            peondeck.append(tavernspread[i])
+        if mastercards[tavernspread[i]].type == 'Basic Adventurer':
+            basicdeck.append(tavernspread[i])
+        if mastercards[tavernspread[i]].type == 'Advanced Adventurer':
+            advanceddeck.append(tavernspread[i])
     for j in range (len(playerinfo)): # reads out party make-ups
         log.write(f"Player {j+1}'s party consists of:\n")
         for dwarf in range (len(playerinfo[j].party)):

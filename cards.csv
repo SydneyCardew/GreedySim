@@ -1,25 +1,25 @@
 Dusty Rooms,Null,2+,,,,,,,Normal,Null
-Dusty Rooms,Null,2+,,,,,,,Normal,Null
+Dusty Rooms,Null,3+,,,,,,,Normal,Null
 Creaking Hallway,Null,2+,,,,,,,Normal,Null
-Creaking Hallway,Null,2+,,,,,,,Normal,Null
+Creaking Hallway,Null,3+,,,,,,,Normal,Null
 Silent Stairway,Null,2+,,,,,,,Normal,Null
-Silent Stairway,Null,2+,,,,,,,Normal,Null
+Silent Stairway,Null,3+,,,,,,,Normal,Null
 Dripping Chasm,Null,2+,,,,,,,Normal,Null
-Dripping Chasm,Null,2+,,,,,,,Normal,Null
+Dripping Chasm,Null,3+,,,,,,,Normal,Null
 Echoing Shaft,Null,2+,,,,,,,Normal,Null
-Echoing Shaft,Null,2+,,,,,,,Normal,Null
+Echoing Shaft,Null,3+,,,,,,,Normal,Null
 Abandoned Workshops,Null,2+,,,,,,,Normal,Null
-Abandoned Workshops,Null,2+,,,,,,,Normal,Null
+Abandoned Workshops,Null,3+,,,,,,,Normal,Null
 Empty Storerooms,Null,2+,,,,,,,Normal,Null
-Empty Storerooms,Null,2+,,,,,,,Normal,Null
+Empty Storerooms,Null,3+,,,,,,,Normal,Null
 Collapsed Tunnel,Null,3+,,,,,,,Normal,Null
 Tumbled Stairs,Null,3+,,,,,,,Normal,Null
 Welded Doorway,Null,4+,,,,,,,Normal,Null
 Hastily Filled Pit,Null,4+,,,,,,,Normal,Null
 Sealed Airshaft,Null,4+,,,,,,,Normal,Null
 Nailed Hatchway,Null,4+,,,,,,,Normal,Null
-Looted Tavern,Null,2+,,,,,,,Normal,Null
-Empty Crypt,Null,2+,,,,,,,Normal,Null
+Looted Tavern,Null,4+,,,,,,,Normal,Null
+Empty Crypt,Null,4+,,,,,,,Normal,Null
 Silver Bars,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Minted Coins,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Agates,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
@@ -31,9 +31,9 @@ Mechanical Curios,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Runic Tomes,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Halfling Herbs,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Elven Etchings,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
-Lesser Mana Crystals,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
+Lesser Mana Crystals,Basic Treasure,3+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Glassware,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
-Amber,Basic Treasure,2+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
+Amber,Basic Treasure,3+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Minor Relics,Basic Treasure,3+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Curious Statuary,Basic Treasure,3+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
 Trade Beads,Basic Treasure,4+,5G/15G/30G,,5G,15G,30G,,Normal,Treasure
@@ -47,23 +47,23 @@ Emeralds,Splendid Treasure,2+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Pearls,Splendid Treasure,2+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Ancient Lore,Splendid Treasure,2+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Oil Paintings,Splendid Treasure,2+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
-Greater Mana Crystals,Splendid Treasure,2+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
+Greater Mana Crystals,Splendid Treasure,3+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Aged Spirits,Splendid Treasure,3+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Yellow Diamonds,Splendid Treasure,4+,10G/20G/40G,,10G,20G,40G,,Normal,Treasure
 Mithril,Astonishing Treasure,2+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
 Platinum,Astonishing Treasure,2+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
 Blue Diamonds,Astonishing Treasure,2+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
-Deep Iron,Astonishing Treasure,2+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
-Star Jewels,Astonishing Treasure,2+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
+Deep Iron,Astonishing Treasure,3+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
+Star Jewels,Astonishing Treasure,4+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
 Sovereign Mana Crystals,Astonishing Treasure,3+,15G/25G/50G,,15G,25G,50G,,Normal,Treasure
 Magic Resistance Potion,Item,2+,1/2 Discard to avoid 3 MY,3 Discard to avoid 5 MY,Upgrade for 15,Sell for 20/30,12.3,,Normal,Item
-Magic Resistance Potion,Item,2+,1/2 Discard to avoid 3 MY,3 Discard to avoid 5 MY,Upgrade for 15,Sell for 20/30,12.3,,Normal,Item
+Magic Resistance Potion,Item,3+,1/2 Discard to avoid 3 MY,3 Discard to avoid 5 MY,Upgrade for 15,Sell for 20/30,12.3,,Normal,Item
 Philter of Bravery,Item,2+,1 Discard to avoid 2 MA,2/3 Discard to avoid 4 MA,Upgrade for 10,Sell for 20/30,1.23,,Normal,Item
-Philter of Bravery,Item,2+,1 Discard to avoid 2 MA,2/3 Discard to avoid 4 MA,Upgrade for 10,Sell for 20/30,1.23,,Normal,Item
+Philter of Bravery,Item,3+,1 Discard to avoid 2 MA,2/3 Discard to avoid 4 MA,Upgrade for 10,Sell for 20/30,1.23,,Normal,Item
 Barrel Charge,Item,2+,1 Discard to avoid 2 ST (1),2/3 Discard to avoid 4 ST,Upgrade for 10,Sell for 20/30,,,Normal,Item
-Barrel Charge,Item,2+,1 Discard to avoid 2 ST (1),2/3 Discard to avoid 4 ST,Upgrade for 10,Sell for 20/30,,,Normal,Item
+Barrel Charge,Item,3+,1 Discard to avoid 2 ST (1),2/3 Discard to avoid 4 ST,Upgrade for 10,Sell for 20/30,,,Normal,Item
 Luminant Flare,Item,2+,1/2 Discard to avoid 2 EN,3 Discard to avoid 3 EN,Upgrade for 15,Sell for 20/30,,,Normal,Item
-Luminant Flare,Item,2+,1/2 Discard to avoid 2 EN,3 Discard to avoid 3 EN,Upgrade for 15,Sell for 20/30,,,Normal,Item
+Luminant Flare,Item,3+,1/2 Discard to avoid 2 EN,3 Discard to avoid 3 EN,Upgrade for 15,Sell for 20/30,,,Normal,Item
 Scouting Bat,Item,2+,1/2 Re-arrange top 8 cards.,3 Re-arrange top 16 cards.,Upgrade for 15,Sell for 20/30,,,Normal,Item
 Scouting Bat,Item,2+,1/2 Re-arrange top 8 cards.,3 Re-arrange top 16 cards.,Upgrade for 15,Sell for 20/30,,,Normal,Item
 Scouting Bat,Item,3+,1/2 Re-arrange top 8 cards.,3 Re-arrange top 16 cards.,Upgrade for 15,Sell for 20/30,,,Normal,Item
@@ -72,7 +72,7 @@ Gelatinous Polyhedra,Hazard,2+,2/3/5 MA,,2MA,3MA,5MA,,Normal,Hazard
 Reanimated Dead,Hazard,2+,1/2/3 MA 1/2/3 MY,,1MA/1MY,2MA/2MY,3MA/3MY,,Normal,Hazard
 Poltergeist Activity,Hazard,2+,2/3/5 MY,,2MY,3MY,5MY,,Normal,Hazard
 Runic Defences,Hazard,2+,1/2/3 MY 1/2/3 ST,,1MY/1ST,2MY/2ST,3MY/3ST,,Normal,Hazard
-Summoning Circle,Hazard,2+,2/3/5 MY 1/2/3 MA,,2MY/1MA,3MY/2MA,5MY/3MA,,Normal,Hazard
+Summoning Circle,Hazard,3+,2/3/5 MY 1/2/3 MA,,2MY/1MA,3MY/2MA,5MY/3MA,,Normal,Hazard
 Unstable Reagents,Hazard,2+,1/2/3 MY 1/2/3 EN,,1MY/1MA,3MY/2MA,5MY/3MA,,Normal,Hazard
 Rogue Automatons,Hazard,4+,1/2/3 EN 1/2/3 MA,,1EN/1MA,2EN/2MA,3EN/3MA,,Normal,Hazard
 Survivalist Traps,Hazard,2+,2/4/6 EN,,2EN,4EN,6EN,,Normal,Hazard
