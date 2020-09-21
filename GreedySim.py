@@ -13,7 +13,7 @@ from random import seed
 
 class player: #the player class
     def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items,capacity,burden,
-                 mitigationEN,mitigationST,mitigationMA,mitigationMY,totalhealth):
+                 mitigationEN,mitigationST,mitigationMA,mitigationMY,totalhealth,artefacts):
         self.recklessness = recklessness
         self.malice = malice
         self.greed = greed
@@ -30,6 +30,7 @@ class player: #the player class
         self.mitigationMA = mitigationMA
         self.mitigationMY = mitigationMY
         self.totalhealth = totalhealth
+        self.artefacts = artefacts
 
     def setburden(self):
         self.burden = len(self.treasures)
@@ -48,16 +49,31 @@ class player: #the player class
 
     def selltreasure(self,delveindicator):
         soldtreasure = 0
-        for loot in self.treasures:
-            if delveindicator == 1:
-                self.gold += int(mastercards[loot].delve1[:-1])
-                soldtreasure += 1
-            if delveindicator == 2:
-                self.gold += int(mastercards[loot].delve2[:-1])
-                soldtreasure += 1
-            if delveindicator == 3:
-                self.gold += int(mastercards[loot].delve3[:-1])
-                soldtreasure += 1
+        for loot in self.treasures: # the if/else statements account for the special rule of the Fence
+            if mastercards[loot].deck == 'Treasure':
+                if delveindicator == 1:
+                    if '144' in self.party:
+                        self.gold += int(mastercards[loot].delve1[:-1])+5
+                        soldtreasure += 1
+                    else:
+                        self.gold += int(mastercards[loot].delve1[:-1])
+                        soldtreasure += 1
+                if delveindicator == 2:
+                    if '144' in self.party:
+                        self.gold += int(mastercards[loot].delve1[:-1])+10
+                        soldtreasure += 1
+                    else:
+                        self.gold += int(mastercards[loot].delve2[:-1])
+                        soldtreasure += 1
+                if delveindicator == 3:
+                    if '144' in self.party:
+                        self.gold += int(mastercards[loot].delve1[:-1])+15
+                        soldtreasure += 1
+                    else:
+                        self.gold += int(mastercards[loot].delve3[:-1])
+                        soldtreasure += 1
+            elif mastercards[loot].deck == 'Artefact':
+                self.artefacts.append(self.treasures.pop(self.treasures.index(loot)))
         return soldtreasure
 
     def statset(self):
@@ -67,12 +83,19 @@ class player: #the player class
         self.mitigationMA = 0
         self.mitigationMY = 0
         self.capacity += sum(self.health)
+        if '143' in self.party: #Extra treasure for Quartermaster
+            self.capacity += 1
         for x in self.party:
-            if x == '121':
+            if x == '121': #'Lucky' Dhorzan
                 self.mitigationEN += 1
                 self.mitigationST += 1
                 self.mitigationMA += 1
                 self.mitigationMY += 1
+            if x == '165': #Jack of All Trades
+                self.mitigationEN += 2
+                self.mitigationST += 2
+                self.mitigationMA += 2
+                self.mitigationMY += 2
             if int(x) >= 149 and int(x) <= 164:
                 mitnumber = int(mastercards[x].maintext[7])
                 mitstring = mastercards[x].maintext[9:11]
@@ -147,19 +170,19 @@ def personality(players,player1p,player2p,player3p,player4p,player5p): #Initiali
     player1p += '()';player2p += '()';player3p += '()';player4p += '()';player5p += '()'
     player1person = eval((player1p))
     player1 = player(player1person[0],player1person[1],player1person[2],
-                     player1person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+                     player1person[3],0,[],[],[],[],0,0,0,0,0,0,0,[])
     player2person = eval((player2p))
     player2 = player(player2person[0],player2person[1],player2person[2],
-                     player2person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+                     player2person[3],0,[],[],[],[],0,0,0,0,0,0,0,[])
     player3person = eval((player3p))
     player3 = player(player3person[0],player3person[1],player3person[2],
-                     player3person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+                     player3person[3],0,[],[],[],[],0,0,0,0,0,0,0,[])
     player4person = eval((player4p))
     player4 = player(player4person[0],player4person[1],player4person[2],
-                     player4person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+                     player4person[3],0,[],[],[],[],0,0,0,0,0,0,0,[])
     player5person = eval((player5p))
     player5 = player(player5person[0],player5person[1],player5person[2],
-                     player5person[3],0,[],[],[],[],0,0,0,0,0,0,0)
+                     player5person[3],0,[],[],[],[],0,0,0,0,0,0,0,[])
     playerinfo = [player1,player2,player3,player4,player5]
     return playerinfo
 
@@ -189,6 +212,9 @@ def leaderpick(players,playerinfo,leaderdeck): # the players pick their leaders
             playerinfo[player].health.append(2)
         elif playerinfo[player].malice > 40 and '121' in leaderdeck: #picks 'Lucky' Dhorzan
             playerinfo[player].party.append(leaderdeck.pop(leaderdeck.index('121')))
+            playerinfo[player].health.append(2)
+        elif playerinfo[player].recklessness < 50 and '124' in leaderdeck: #picks Runecaller Svadi
+            playerinfo[player].party.append(leaderdeck.pop(leaderdeck.index('124')))
             playerinfo[player].health.append(2)
         else:
             playerinfo[player].party.append(leaderdeck.pop(0))
@@ -266,6 +292,7 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
         log.write(f"Player {position+1} has won the roll-off and is first to pick.\n")
     bl(1)
     picklist = [True] * players # records which players are still picking
+    pickrounds = 0
     while True in picklist:
         for p in range (len(tavernspread)): # runs through the picking process
             try:
@@ -291,11 +318,14 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
                 else:
                     picklist[position] = False
             except IndexError:
-                if len(playerinfo[position].party) > 5:
-                    picklist[position] = False
+                pass
         position += 1
-        if position > players-1:
+        pickrounds += 1
+        if position > players:
             position = 0
+        if pickrounds > 20: #kills the hiring phase if things get into an endless loop for any reason
+            for x in range (len(picklist)):
+                picklist[x] = False
     bl(1)
     log.write('Hiring phase concludes.\n')
     bl(1)
@@ -306,7 +336,7 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
             basicdeck.append(tavernspread[i])
         if mastercards[tavernspread[i]].type == 'Advanced Adventurer':
             advanceddeck.append(tavernspread[i])
-    for j in range (len(playerinfo)): # reads out party make-ups
+    for j in range (players): # reads out party make-ups
         log.write(f"Player {j+1}'s party consists of:\n")
         for dwarf in range (len(playerinfo[j].party)):
             log.write(f"{mastercards[playerinfo[j].party[dwarf]].name} "
@@ -329,23 +359,23 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
     log.write (f"Expedition phase, delve {delveindicator}.\n")
     bl(1)
     position = 0
-    playlist = [x+1 for x in range (players)] # this array lets the game know which players are in the game and which are not without jumbling the indices
+    playlist = [x for x in range (players)] # this array lets the game know which players are in the game and which are not without jumbling the indices
     if delveindicator == 1:
         heightlist = []
         for n in range(players):
             heightlist.append(playerinfo[n].height)
         position = heightlist.index(max(heightlist))
-        log.write(f"Play commences. Player {playlist[position]} is the tallest "
+        log.write(f"Play commences. Player {playlist[position]+1} is the tallest "
                   f"at {heightlist[position]}cm and thus goes first.\n")
     else:
         if firstout > 0:
             position = firstout
-            log.write(f"Play commences. Player {playlist[position]} was first "
+            log.write(f"Play commences. Player {playlist[position]+1} was first "
                       f"out of the mine last delve and thus goes first.\n")
         elif firstout == 0:
             position = randint(0,players-1)
             log.write(f"Play commences. Since all players were lost on the previous delve, "
-                      f"they roll dice. Player {playlist[position]} wins, and thus goes first.\n")
+                      f"they roll dice. Player {playlist[position]+1} wins, and thus goes first.\n")
     stacks = []
     for t in range(players): # creates an appropriate number of empty lists to hold stacks
         stacks.append([])
@@ -365,13 +395,19 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
         for y in range(players):
             try:
                 carddraw = expeditiondeck.pop(-1)
-                log.write(f"Player {playlist[position]} draws {mastercards[carddraw].name}\n")
+                log.write(f"Player {playlist[position]+1} draws {mastercards[carddraw].name}\n")
                 emptystack = False
                 for z in range (len(stacks)):
                     if stacks[z] == []:
                         emptystack = True
                         emptyindex = z
                 if mastercards[carddraw].deck == 'Treasure':
+                    if emptystack == True:
+                        stacks[emptyindex].append(carddraw)
+                        emptystack = False
+                    else:
+                        stacks[stackstats[2]].append(carddraw)
+                if mastercards[carddraw].deck == 'Artefact':
                     if emptystack == True:
                         stacks[emptyindex].append(carddraw)
                         emptystack = False
@@ -398,7 +434,7 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
             except IndexError:
                 if timer == 1:
                     if len(playlist) > 0:
-                        log.write(f"Player {playlist[position]} reaches the end of the deck, and "
+                        log.write(f"Player {playlist[position]+1} reaches the end of the deck, and "
                                   f"replenishes it from the discard pile. The Darkness Hungers!\n")
                         discardpile = shuffle(discardpile)
                         for x in range (len(discardpile)):
@@ -427,31 +463,42 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
                 log.write(f"Size: {len(playstack)}\n")
             bl(1)
             for a in range (len(stacks)):
-                if len(stacks[a]) == 1 and voidedflag == False:
-                    if mastercards[stacks[a][0]].type == 'Null':
-                        airoll = randint (1,100)
-                        try:
-                            if playerinfo[playlist[position]].greed >= airoll:
-                                discardpile.extend(stacks[a])
-                                stacks[a] = []
-                                log.write(f"Player {playlist[position]} voids stack {stacks.index(stacks[a])+1}.\n\n")
-                                voidedflag = True
-                            else:
+                try:
+                    if ((len(stacks[a]) == 1) or (len(stacks[a]) == 2 and '141' in playerinfo[playlist[position]].party) \
+                        or (len(stacks[a]) == 3 and '168' in playerinfo[playlist[position]].party)) and voidedflag == False:
+                        if mastercards[stacks[a][0]].type == 'Null':
+                            airoll = randint (1,100)
+                            try:
+                                if playerinfo[playlist[position]].greed >= airoll:
+                                    log.write(f"Player {playlist[position]+1} voids stack {stacks.index(stacks[a])+1}.\n")
+                                    if len(stacks[a]) == 2 and '141' in playerinfo[playlist[position]].party:
+                                        log.write(f"The Clairvoyant allowed a two card stack to be voided.\n")
+                                    elif len(stacks[a]) == 3 and '168' in playerinfo[playlist[position]].party:
+                                        log.write(f"The Fateweaver allowed a three card stack to be voided.\n")
+                                    log.write('\n')
+                                    discardpile.extend(stacks[a])
+                                    stacks[a] = []
+                                    voidedflag = True
+                                else:
+                                    pass
+                            except IndexError:
                                 pass
-                        except IndexError:
-                            pass
-                    elif mastercards[stacks[a][0]].type == 'Hazard':
-                        airoll = randint (1,100)
-                        try:
-                            if playerinfo[playlist[position]].recklessness <= airoll:
-                                discardpile.extend(stacks[a])
-                                stacks[a] = []
-                                log.write(f"Player {playlist[position]} voids stack {stacks.index(stacks[a])+1}.\n\n")
-                                voidedflag = True
-                            else:
+                        elif mastercards[stacks[a][0]].type == 'Hazard':
+                            airoll = randint (1,100)
+                            try:
+                                if playerinfo[playlist[position]].recklessness <= airoll:
+                                    discardpile.extend(stacks[a])
+                                    stacks[a] = []
+                                    log.write(f"Player {playlist[position]+1} voids stack {stacks.index(stacks[a])+1}.\n\n")
+                                    voidedflag = True
+                                else:
+                                    pass
+                            except IndexError:
                                 pass
-                        except IndexError:
-                            pass
+                except IndexError:
+                    log.write (f"!!! UNKNOWN FAULT IN VOID FUNCTION !!!\n\n")
+                    log.write (f"{playlist[position]}")
+                    pass
                 if len(stacks[a]) >= 6 and takenflag == False:
                     stackstats = stats(stacks, delveindicator)
                     discardables = takestack(stacks[a],a,position,playerinfo,stackstats,playlist)
@@ -462,18 +509,21 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
                 playerinfo[playlist[position]].healthget()
                 if playerinfo[playlist[position]].totalhealth > 0:
                     pass
-                elif playerinfo[playlist[position]].totalhealth == 0:
-                    log.write (f"Player {playlist[position]}'s party has been wiped out! "
+                elif playerinfo[playlist[position]].totalhealth <= 0:
+                    log.write (f"Player {playlist[position]+1}'s party has been wiped out! "
                                f"They limp back to the surface...\n")
                     playlist.pop(position)
             except IndexError:
+                log.write(f"!!! ERROR IN PARTY DEATH CHECK {position} !!!")
                 pass
             try:
                 if (playerinfo[playlist[position]].capacity - playerinfo[playlist[position]].burden) < 2 \
-                        and sum(playerinfo[playlist[position]-1].health) > 0:
-                    log.write (f"Player {playlist[position]} attempts to escape the dungeon!\n")
-                    discardpile = escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delveindicator)
-                    escapedcount += 1
+                        and sum(playerinfo[playlist[position]].health) > 0:
+                    log.write (f"Player {playlist[position]+1} attempts to escape the dungeon!\n")
+                    escapepack = escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delveindicator)
+                    discardpile, escapeyes = escapepack[0],escapepack[1]
+                    if escapeyes == True:
+                        escapedcount += 1
                     playlist.pop(position)
                     if escapeflag == False:
                         firstout = position
@@ -484,7 +534,7 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
         playcounter += 1
         if position >= len(playlist):
             position = 0
-        if playcounter > len(playlist)+1:
+        if playcounter >= len(playlist):
             playcounter = 1
         log.write (f"Discard pile: {len(discardpile)}\n")
         log.write (f"Deck: {len(expeditiondeck)}\n")
@@ -503,7 +553,7 @@ def escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delve
         escapelength = 2
     for x in range (escapelength):
         carddraw = expeditiondeck.pop(-1)
-        log.write(f"Player {playlist[position]} draws {mastercards[carddraw].name}\n")
+        log.write(f"Player {playlist[position]+1} draws {mastercards[carddraw].name}\n")
         if mastercards[carddraw].type == 'Hazard':
             hazard = 0
             endamage, stdamage, madamage, mydamage = 0, 0, 0, 0
@@ -579,102 +629,126 @@ def escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delve
             else:
                 log.write('They mitigate all hazard, and take no damage.\n')
         discardpile.append(carddraw)
-    log.write(f"placeholder. Escape of player {playlist[position]} successful.\n")
-    return discardpile
+    playerinfo[playlist[position]].healthget()
+    if playerinfo[playlist[position]].totalhealth > 0:
+        log.write(f"Player {playlist[position]+1} has escaped the dungeon!\n")
+        escapeyes = True
+    elif playerinfo[playlist[position]].totalhealth <= 0:
+        log.write(f"Player {playlist[position] + 1}'s party has been wiped out during their escape! "
+                  f"They limp back to the surface...\n")
+        escapeyes = False
+    escapepack = [discardpile,escapeyes]
+    return escapepack
 
 def takestack(stacka,stackid,position,playerinfo,stackstats,playlist): #This function 'takes' a stack and deals with the consequences
     try:
-        log.write (f"Player {playlist[position]} takes stack {stackid+1} containing: \n")
-        for stackcard in range (len(stacka)):
-            log.write(f"{mastercards[stacka[stackcard]].name}")
-            if stackcard < len(stacka) - 1:
-                log.write(', ')
-            else:
-                log.write('.\n')
-        if stackstats[0][stackid].hazard > 0: #this segment controls the damage and damage mitigation
-            startdamage = stackstats[0][stackid].hazard
-            endamage = stackstats[0][stackid].ENhazard
-            stdamage = stackstats[0][stackid].SThazard
-            madamage = stackstats[0][stackid].MAhazard
-            mydamage = stackstats[0][stackid].MYhazard
-            enmit = playerinfo[playlist[position]].mitigationEN
-            stmit = playerinfo[playlist[position]].mitigationST
-            mamit = playerinfo[playlist[position]].mitigationMA
-            mymit = playerinfo[playlist[position]].mitigationMY
-            log.write (f"They take {startdamage} hazard from the stack.\n")
-            log.write (f"{endamage} EN Hazard\n")
-            log.write(f"{stdamage} ST Hazard\n")
-            log.write(f"{madamage} MA Hazard\n")
-            log.write(f"{mydamage} MY Hazard\n")
-            mitigationtot = (enmit + stmit + mamit + mymit)
-            finaldamage = startdamage - mitigationtot
-            log.write(f"They mitigate {mitigationtot} hazard. {finaldamage} hazard remaining.\n")
-            if finaldamage > 0:
-                log.write('Rolling dice.\n')
-                damage = 0
-                for hazdice in range (finaldamage):
-                    diceroll = randint(1,6)
-                    log.write (f"{diceroll}")
-                    if hazdice < finaldamage - 1:
-                        log.write(', ')
-                    else:
-                        log.write('.\n')
-                    if diceroll >= 5:
-                        damage += 1
-                if damage > 0:
-                    if '145' in playerinfo[playlist[position]].party: # Deploys the paladin's special power
-                        log.write(f"The paladin absorbs 1 point of damage!\n")
-                        damage -= 1
-                    log.write(f"They take {damage} damage.\n")
-                    playerinfo[position].takedamage(damage)
-                    log.write(f"{playerinfo[position].health}")
+        try:
+            log.write (f"Player {playlist[position]+1} takes stack {stackid+1} containing: \n")
+            for stackcard in range (len(stacka)):
+                log.write(f"{mastercards[stacka[stackcard]].name}")
+                if stackcard < len(stacka) - 1:
+                    log.write(', ')
                 else:
-                    log.write('They take no damage.\n')
+                    log.write('.\n')
+        except IndexError:
+            log.write(f"\n!!! FAULT IN TAKESTACK LOGGING !!!.\n")
+        try:
+            if stackstats[0][stackid].hazard > 0: #this segment controls the damage and damage mitigation
+                startdamage = stackstats[0][stackid].hazard
+                endamage = stackstats[0][stackid].ENhazard
+                stdamage = stackstats[0][stackid].SThazard
+                madamage = stackstats[0][stackid].MAhazard
+                mydamage = stackstats[0][stackid].MYhazard
+                enmit = playerinfo[playlist[position]].mitigationEN
+                stmit = playerinfo[playlist[position]].mitigationST
+                mamit = playerinfo[playlist[position]].mitigationMA
+                mymit = playerinfo[playlist[position]].mitigationMY
+                log.write (f"They take {startdamage} hazard from the stack.\n")
+                log.write (f"{endamage} EN Hazard\n")
+                log.write(f"{stdamage} ST Hazard\n")
+                log.write(f"{madamage} MA Hazard\n")
+                log.write(f"{mydamage} MY Hazard\n")
+                mitigationtot = (enmit + stmit + mamit + mymit)
+                finaldamage = startdamage - mitigationtot
+                log.write(f"They mitigate {mitigationtot} hazard. {finaldamage} hazard remaining.\n")
+                if finaldamage > 0:
+                    log.write('Rolling dice.\n')
+                    damage = 0
+                    for hazdice in range (finaldamage):
+                        diceroll = randint(1,6)
+                        log.write (f"{diceroll}")
+                        if hazdice < finaldamage - 1:
+                            log.write(', ')
+                        else:
+                            log.write('.\n')
+                        if diceroll >= 5:
+                            damage += 1
+                    if damage > 0:
+                        if '145' in playerinfo[playlist[position]].party: # Deploys the paladin's special power
+                            log.write(f"The paladin absorbs 1 point of damage!\n")
+                            damage -= 1
+                        log.write(f"They take {damage} damage.\n")
+                        playerinfo[position].takedamage(damage)
+                        log.write(f"{playerinfo[position].health}")
+                    else:
+                        log.write('They take no damage.\n')
+                else:
+                    log.write('They mitigate all hazard, and take no damage.\n')
             else:
-                log.write('They mitigate all hazard, and take no damage.\n')
-        else:
-            log.write (f"They take no hazard from the stack.\n")
+                log.write (f"They take no hazard from the stack.\n")
+        except:
+            log.write(f"\n!!! FAULT IN TAKESTACK DAMAGE ROUTINE !!!.\n")
         bl(1)
-        if stackstats[0][stackid].items > 0:
-            log.write (f"They pick up {stackstats[0][stackid].items} items!\n")
-            for carditem in range (len(stacka)):
-                if mastercards[stacka[carditem]].deck == 'Item':
-                    log.write(f"{mastercards[stacka[carditem]].name}\n")
-                    playerinfo[playlist[position]].items.append(stacka.pop(carditem))
-        stackreward = stackstats[0][stackid].reward
-        log.write (f"They have the pick of {stackreward}G worth of treasure!\n")
-        treasurelist = []
-        for cardtreasure in range (len(stacka)):
-            if mastercards[stacka[cardtreasure]].deck == 'Treasure' or mastercards[stacka[cardtreasure]].deck == 'Artefact':
-                log.write(f"{mastercards[stacka[cardtreasure]].name}\n")
-                treasurelist.append(stacka[cardtreasure])
-        for cardsremaining in stacka:
-            if cardsremaining in treasurelist:
-                del cardsremaining
-        playerinfo[playlist[position]].setburden()
-        localcapacity = playerinfo[playlist[position]].capacity - playerinfo[playlist[position]-1].burden
-        if localcapacity < 0:
-            localcapacity = 0
-        bl(1)
-        log.write (f"Player can pick up {localcapacity} treasures.\n")
-        for x in range (localcapacity):
-            try:
-                playerinfo[playlist[position]].treasures.append(treasurelist.pop(-1))
-                log.write (f"Player {playlist[position]} took {mastercards[playerinfo[playlist[position]].treasures[-1]].name}!\n")
-            except IndexError:
-                pass
-        playerinfo[playlist[position]].setburden()
-        log.write (f"Player has {playerinfo[playlist[position]].capacity} total capacity "
-                   f"and is carrying {playerinfo[playlist[position]].burden} loot.\n")
-        while playerinfo[playlist[position]].burden > playerinfo[playlist[position]].capacity:
-            log.write(f"Player drops {mastercards[playerinfo[playlist[position]].treasures[-1]].name}!")
-            playerinfo[playlist[position]].treasures.pop()
-        bl(1)
-        stacka.extend(treasurelist)
+        try:
+            itemlist = []
+            if stackstats[0][stackid].items > 0:
+                log.write (f"They pick up {stackstats[0][stackid].items} items!\n")
+                for carditem in range (len(stacka)):
+                    if mastercards[stacka[carditem]].deck == 'Item':
+                        log.write(f"{mastercards[stacka[carditem]].name}\n")
+                        itemlist.append(stacka[carditem])
+            for items in itemlist:
+                playerinfo[playlist[position]].items.append(itemlist.pop(-1))
+        except IndexError:
+            log.write(f"\n!!! FAULT IN TAKESTACK ITEM ROUTINE !!!.\n")
+        try:
+            stackreward = stackstats[0][stackid].reward
+            log.write (f"They have the pick of {stackreward}G worth of treasure!\n")
+            treasurelist = []
+            for cardtreasure in range (len(stacka)):
+                if mastercards[stacka[cardtreasure]].deck == 'Treasure' or mastercards[stacka[cardtreasure]].deck == 'Artefact':
+                    log.write(f"{mastercards[stacka[cardtreasure]].name}\n")
+                    treasurelist.append(stacka[cardtreasure])
+            for cardsremaining in stacka:
+                if cardsremaining in treasurelist:
+                    del cardsremaining
+            playerinfo[playlist[position]].setburden()
+            localcapacity = playerinfo[playlist[position]].capacity - playerinfo[playlist[position]].burden
+            if localcapacity < 0:
+                localcapacity = 0
+            bl(1)
+            log.write (f"Player can pick up {localcapacity} treasures.\n")
+            for x in range (localcapacity):
+                try:
+                    playerinfo[playlist[position]].treasures.append(treasurelist.pop(-1))
+                    log.write (f"Player {playlist[position]+1} took {mastercards[playerinfo[playlist[position]].treasures[-1]].name}!\n")
+                except IndexError:
+                    pass
+            playerinfo[playlist[position]].setburden()
+            log.write (f"Player has {playerinfo[playlist[position]].capacity} total capacity "
+                       f"and is carrying {playerinfo[playlist[position]].burden} loot.\n")
+            while playerinfo[playlist[position]].burden > playerinfo[playlist[position]].capacity:
+                log.write(f"Player drops {mastercards[playerinfo[playlist[position]].treasures[-1]].name}!")
+                playerinfo[playlist[position]].treasures.pop()
+            bl(1)
+            stacka.extend(treasurelist)
+        except IndexError:
+            log.write(f"\n!!! FAULT IN TAKESTACK LOOTING !!!.\n")
     except IndexError:
         log.write (f"\n!!!UNKNOWN FAULT IN TAKESTACK FUNCTION!!!.\n")
         for x in range (len(playlist)):
-            log.write (f"{playlist[x]-1} ")
+            log.write (f"{playlist[x]} ")
+        log.write(' | ')
         for y in range (len(playerinfo)):
             log.write (f"{y} ")
         log.write (f"({position})\n")
@@ -761,14 +835,19 @@ def resolve(playerinfo,delveindicator,deaths,totaltreasure,roundcounter,roundarr
             playerinfo[x].health[0] = 1
         except IndexError:
             playerinfo[x].health.append(1)
-        for y in range (len(playerinfo[x].health)):
-            if playerinfo[x].health[y] == 0:
+        for patient in range (len(playerinfo[x].health)):
+            if playerinfo[x].health[patient] == 0:
                 try:
-                    log.write(f"{mastercards[playerinfo[x].party[y]].name} has died!\n")
-                    playerinfo[x].party.pop(y)
+                    log.write(f"{mastercards[playerinfo[x].party[patient]].name} has died!\n")
+                    playerinfo[x].party.pop(patient)
                     deaths += 1
                 except IndexError:
                     pass
+        if delveindicator == 3:
+            for z in range (len(playerinfo[x].artefacts)):
+                log.write (f"player {x+1} returns {mastercards[playerinfo[x].artefacts[z]].name} to the Mountain Halls and is paid 100G!\n")
+                playerinfo[x].gold += 100
+                bl(1)
     roundarray.append(roundcounter)
     resolvestats = [deaths,totaltreasure,roundarray]
     return resolvestats
@@ -778,7 +857,7 @@ def bl(num): # inserts blank lines to help format the log file
         log.write('\n\n')
 
 def hr(): # inserts a horizontal rule to help format the log file
-    log.write("\n----------------\n\n")
+    log.write("\n------------------\n\n")
 
 def pathpadder(lognum,logincrement): #this routine pads out the number in the log file names
     pad = lognum - len(str(logincrement))
@@ -864,6 +943,7 @@ elif args.setseed:
     seed(setseed)
 else:
     seed()
+    randseed = '(system time)'
 
 
 # This section of the program extracts information about the cards from the csv file and creates dictionaries and arrays for use by the rest of the program
@@ -901,6 +981,7 @@ for n in tabledata:
 #SETUP MASS LOGGING VARIABLES AND MULTIMODE
 if runs > 1:
     summaryarray = []
+    winpartyarray = []
     if multimode == 'spread': #This cuts up the runs into games with different numbers of players
         multispread = True
         multirandom = False
@@ -908,13 +989,11 @@ if runs > 1:
         multisegment = runs // 4
         multiremainder = runs - (multisegment * 4)
         for x in range(2, 6):
-            builderarray = []
             builderarray = [x] * multisegment
             multiarray.extend(builderarray)
         if multiremainder == 0:
             pass
         else:
-            builderarray = []
             builderarray = [5] * multiremainder
             multiarray.extend(builderarray)
     elif multimode == 'random':
@@ -985,6 +1064,7 @@ while playing:
 
     hr()
     log.write ('Delve 1 Begins\n')
+    hr()
     expeditiondeck = shuffle(expeditiondeck)
     artefactdeck = shuffle(artefactdeck)
     artefactadd = artefactdeck.pop(0)
@@ -1002,8 +1082,9 @@ while playing:
 
     # DELVE 2
 
+    hr()
     log.write ('Delve 2 Begins\n')
-    bl(1)
+    hr()
     delveindicator += 1
     expeditiondeck = shuffle(expeditiondeck)
     artefactdeck = shuffle(artefactdeck)
@@ -1024,8 +1105,9 @@ while playing:
 
     # DELVE 3
 
+    hr()
     log.write ('Delve 3 Begins\n')
-    bl(1)
+    hr()
     delveindicator += 1
     expeditiondeck = shuffle(expeditiondeck)
     artefactdeck = shuffle(artefactdeck)
@@ -1039,14 +1121,22 @@ while playing:
     firstout, expeditiondeck, playerinfo, roundcounter = delvepack[0], delvepack[1], delvepack[2], delvepack[3]
     resolvestats = resolve(playerinfo,delveindicator,deaths,totaltreasure,roundcounter,roundarray)
     deaths,totaltreasure,roundarray = resolvestats[0],resolvestats[1],resolvestats[2]
+    winlist = []  # these lines are used to determine which player has won
+    for n in range(players):
+        winlist.append(playerinfo[n].gold)
+    winnum = winlist.count(max(winlist))
+    hr()
+    log.write(f"player {winnum + 1} wins with {max(winlist)} gold!")
     log.close()
     if runs > 1: #handles tidying up the loop in -m mode
+        winpartyarray.extend(playerinfo[winnum].party)
         roundaverage = sum(roundarray)/len(roundarray) # gets the mean of the number of rounds played
         roundaverage2sf = "{:.2f}".format(roundaverage) # rounds the mean to two decimal places
         gamediff = len(str(runs)) - len(str(playcount))
         gamepad = '0' * gamediff
         summary = (f"Game {gamepad}{playcount}/{runs}: {players} players. {deaths} adventurer deaths. "
-                   f"{totaltreasure} items of loot recovered. Average rounds per delve: {roundaverage2sf}")
+                   f"{totaltreasure} items of loot recovered. Average rounds per delve: {roundaverage2sf}. "
+                   f"Winning score: {max(winlist)}")
         summaryarray.append(summary)
         deaths,totaltreasure = 0,0
         roundarray.clear()
@@ -1060,3 +1150,30 @@ if runs > 1:
     for x in range (len(summaryarray)):
         masslog.write(f"{summaryarray[x]}\n")
     masslog.close()
+
+# WRITE PARTY COMPOSITION LOG
+
+    partylog = open(f"{currentdir}{pathmod}Card Strengths {today} - {padstring}{logincrement}.txt", "w")
+    partylog.write (f"Relative strengths of Adventurers based on composition of winning parties\n\n")
+    partylog.write (f"------------------------------------\n\n")
+    windict = {}
+    countlist = []
+    totcount = 0
+    for x in range (len(winpartyarray)):
+        wincount = winpartyarray.count(winpartyarray[x])
+        if mastercards[winpartyarray[x]].name not in windict:
+            windict.update({mastercards[winpartyarray[x]].name : wincount})
+            countlist.append(wincount)
+            totcount += wincount
+        else:
+            pass
+    for y in windict:
+        windict[y] /= runs
+        windict[y] *= 100
+        windict[y] = float("{:.2f}".format(windict[y]))
+    namelist = sorted(windict, key=windict.__getitem__, reverse=True)
+    valuelist = sorted(windict.values(), reverse=True)
+    countlist = sorted(countlist,reverse=True)
+    for z in range (len(namelist)):
+        partylog.write(f"{z+1}: {namelist[z]} appears in {countlist[z]} winning parties, or {valuelist[z]}% of winning parties.\n")
+    partylog.close()
