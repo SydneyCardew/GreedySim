@@ -1,6 +1,6 @@
-#GreedySim
+# GreedySim
 
-#####A program by Sydney Cardew
+##### A program by Sydney Cardew
 
 GreedySim is a self-playing version of my card game 'Too Greedily, Too Deep'. I wrote it both as a programming challenge and also in order to help me analyse and tweak the balance of the game. It is my hope that, as I improve the fidelity of the simulation and develop new ways to extract data about the simulation runs in aggregate, any unfair cards will be highlighted.
 
@@ -8,14 +8,14 @@ As of version 1.1.0 GreedySim has already helped make significant changes to how
 
 ---
 
-#####Command line arguments:
+##### Command line arguments:
 
 -m, --multi: runs multiple instances of the simulation at once.    
 -s, --setseed: uses the set seed from config.ini     
 -r, --truerandom: retrieves a truly random number from random.org     
 -v, --version: displays the version number
 
-#####Config.ini settings:
+##### Config.ini settings:
 
 * 'version': sets the version number    
 * 'players': sets the number of players    
@@ -31,7 +31,7 @@ As of version 1.1.0 GreedySim has already helped make significant changes to how
 
 --- 
 
-####Version History:
+#### Version History:
 
 **Version 1.0.0**: 15/09/2020   
 Description: First working version of GreedySim
@@ -44,7 +44,7 @@ Description: Numerous bug fixes and tweaks, improvements to mass logging (includ
 
 ---
 
-####Future Development Goals:    
+#### Future Development Goals:    
 
 * Fully implement game rules and elements not currently implemented:      
     * ~~Voiding stacks~~
