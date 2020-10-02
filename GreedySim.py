@@ -8,129 +8,9 @@ from datetime import date
 from datetime import datetime
 from random import randint
 from random import seed
-
-# CLASSES
-
-class player: #the player class
-    def __init__(self,recklessness,malice,greed,height,gold,party,health,treasures,items,capacity,burden,
-                 mitigationEN,mitigationST,mitigationMA,mitigationMY,totalhealth,artefacts):
-        self.recklessness = recklessness
-        self.malice = malice
-        self.greed = greed
-        self.height = height
-        self.gold = gold
-        self.party = party
-        self.health = health
-        self.treasures = treasures
-        self.items = items
-        self.capacity = capacity
-        self.burden = burden
-        self.mitigationEN = mitigationEN
-        self.mitigationST = mitigationST
-        self.mitigationMA = mitigationMA
-        self.mitigationMY = mitigationMY
-        self.totalhealth = totalhealth
-        self.artefacts = artefacts
-
-    def setburden(self):
-        self.burden = len(self.treasures)
-
-    def healthget(self):
-        self.totalhealth = sum(self.health)
-
-    def takedamage(self,damage):
-        self.damage = damage
-        for x in range (damage):
-            self.health[self.health.index(max(self.health))] -= 1
-        if sum(self.health) <= 0:
-            for y in range (len(self.health)):
-                self.health[y] = 0
-
-
-    def selltreasure(self,delveindicator):
-        soldtreasure = 0
-        for loot in self.treasures: # the if/else statements account for the special rule of the Fence
-            if mastercards[loot].deck == 'Treasure':
-                if delveindicator == 1:
-                    if '144' in self.party:
-                        self.gold += int(mastercards[loot].delve1[:-1])+5
-                        soldtreasure += 1
-                    else:
-                        self.gold += int(mastercards[loot].delve1[:-1])
-                        soldtreasure += 1
-                if delveindicator == 2:
-                    if '144' in self.party:
-                        self.gold += int(mastercards[loot].delve1[:-1])+10
-                        soldtreasure += 1
-                    else:
-                        self.gold += int(mastercards[loot].delve2[:-1])
-                        soldtreasure += 1
-                if delveindicator == 3:
-                    if '144' in self.party:
-                        self.gold += int(mastercards[loot].delve1[:-1])+15
-                        soldtreasure += 1
-                    else:
-                        self.gold += int(mastercards[loot].delve3[:-1])
-                        soldtreasure += 1
-            elif mastercards[loot].deck == 'Artefact':
-                self.artefacts.append(self.treasures.pop(self.treasures.index(loot)))
-        return soldtreasure
-
-    def statset(self):
-        self.capacity = 0
-        self.mitigationEN = 0
-        self.mitigationST = 0
-        self.mitigationMA = 0
-        self.mitigationMY = 0
-        self.capacity += sum(self.health)
-        if '143' in self.party: #Extra treasure for Quartermaster
-            self.capacity += 1
-        for x in self.party:
-            if x == '121': #'Lucky' Dhorzan
-                self.mitigationEN += 1
-                self.mitigationST += 1
-                self.mitigationMA += 1
-                self.mitigationMY += 1
-            if x == '165': #Jack of All Trades
-                self.mitigationEN += 2
-                self.mitigationST += 2
-                self.mitigationMA += 2
-                self.mitigationMY += 2
-            if int(x) >= 149 and int(x) <= 164:
-                mitnumber = int(mastercards[x].maintext[7])
-                mitstring = mastercards[x].maintext[9:11]
-                if mitstring == 'EN':
-                    self.mitigationEN += mitnumber
-                elif mitstring == 'ST':
-                    self.mitigationST += mitnumber
-                elif mitstring == 'MA':
-                    self.mitigationMA += mitnumber
-                elif mitstring == 'MY':
-                    self.mitigationMY += mitnumber
-
-class card: #the card class
-    def __init__(self,name,type,gamesize,maintext,delve1,delve2,delve3,cost,deck):
-        self.name = name
-        self.type = type
-        self.gamesize = gamesize
-        self.maintext = maintext
-        self.delve1 = delve1
-        self.delve2 = delve2
-        self.delve3 = delve3
-        self.cost = cost
-        self.deck = deck
-
-class stack: #the stack class
-    def __init__(self,contents,hazard,reward,items,size,ENhazard,SThazard,MAhazard,MYhazard):
-        self.contents = contents
-        self.hazard = hazard
-        self.reward  = reward
-        self.items = items
-        self.size = size
-        self.ENhazard = ENhazard
-        self.SThazard = SThazard
-        self.MAhazard = MAhazard
-        self.MYhazard = MYhazard
+from Greedyclasses import player
+from Greedyclasses import card
+from Greedyclasses import stack
 
 # FUNCTIONS
 
@@ -166,7 +46,8 @@ def shuffle(cards): #card shuffling routine
         shuffcards.append(cards.pop(select-1))
     return shuffcards
 
-def personality(players,player1p,player2p,player3p,player4p,player5p): #Initialises the player classes and calls the personality routines
+def personality(players,player1p,player2p,player3p,player4p,player5p): #Initialises the player classes
+    # and calls the personality routines
     player1p += '()';player2p += '()';player3p += '()';player4p += '()';player5p += '()'
     player1person = eval((player1p))
     player1 = player(player1person[0],player1person[1],player1person[2],
@@ -204,7 +85,8 @@ def aggressive():
 
 def leaderpick(players,playerinfo,leaderdeck): # the players pick their leaders
     for player in range(players):
-        if playerinfo[player].greed > 60 and playerinfo[player].recklessness > 50 and '122' in leaderdeck: #picks Lady Minewater
+        if playerinfo[player].greed > 60 and playerinfo[player].recklessness > 50 \
+                and '122' in leaderdeck: #picks Lady Minewater
             playerinfo[player].party.append(leaderdeck.pop(leaderdeck.index('122')))
             playerinfo[player].health.append(2)
         elif playerinfo[player].greed > 50 and '125' in leaderdeck: #picks Ulgrim the Auctioneer
@@ -219,7 +101,7 @@ def leaderpick(players,playerinfo,leaderdeck): # the players pick their leaders
         else:
             playerinfo[player].party.append(leaderdeck.pop(0))
             playerinfo[player].health.append(2)
-        playerinfo[player].statset()
+        playerinfo[player].statset(mastercards)
         if playerinfo[player].party[0] == '122':
             playerinfo[player].gold = 40
         else:
@@ -247,7 +129,8 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
         for a in range(players):
             tavernspread.append(basicdeck.pop(-1))
         for b in range(players*2):
-            try: # this substitutes in basic adventurers if the game runs out of advanced adventurers, which it invariably will in a 5 player game
+            try: # this substitutes in basic adventurers if the game runs out of advanced adventurers,
+                # which it invariably will in a 5 player game
                 tavernspread.append(advanceddeck.pop(-1))
             except IndexError:
                 tavernspread.append(basicdeck.pop(-1))
@@ -257,7 +140,8 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
             log.write(f"{mastercards[tavcards].name}")
             if (tavernspread.index(tavcards)) < len(tavernspread)-1 and (tavernspread.index(tavcards)+1) % players != 0:
                 log.write(', ')
-            elif (tavernspread.index(tavcards)) < len(tavernspread) - 1 and (tavernspread.index(tavcards)+1) % players == 0:
+            elif (tavernspread.index(tavcards)) < len(tavernspread) - 1 \
+                    and (tavernspread.index(tavcards)+1) % players == 0:
                 log.write(',\n')
             else:
                 log.write('.\n')
@@ -297,21 +181,23 @@ def tavern(players,playerinfo,peondeck,basicdeck,advanceddeck,delveindicator): #
         for p in range (len(tavernspread)): # runs through the picking process
             try:
                 cost = int(mastercards[tavernspread[p-1]].cost) # retrieves the cost of the card
-                if cost < playerinfo[position].gold: #checks the cost of the card against the goldreserve of the player
-                    playerinfo[position].party.append(tavernspread.pop(p-1)) #removes the listing from the tavern spread and adds to player info
+                if cost < playerinfo[position].gold: #checks the cost of the card against the gold reserve of the player
+                    playerinfo[position].party.append(tavernspread.pop(p-1)) #removes the listing from the
+                    # tavern spread and adds to player info
                     playerinfo[position].health.append(2) # sets the health of the new hire to 2
                     playerinfo[position].gold -= cost #decreases the player's gold
                     log.write(f"player {position+1} buys {mastercards[playerinfo[position].party[-1]].name}\n")
-                    playerinfo[position].statset()
+                    playerinfo[position].statset(mastercards)
                     break
                 elif cost == playerinfo[position].gold:
                     diceroll = randint (1,100)
                     if diceroll <= playerinfo[position].recklessness:
-                        playerinfo[position].party.append(tavernspread.pop(p - 1))  # removes the listing from the tavern spread and adds to player info
+                        playerinfo[position].party.append(tavernspread.pop(p - 1))  # removes the listing from
+                        # the tavern spread and adds to player info
                         playerinfo[position].health.append(2)  # sets the health of the new hire to 2
                         playerinfo[position].gold -= cost  # decreases the player's gold
                         log.write(f"player {position + 1} buys {mastercards[playerinfo[position].party[-1]].name}\n")
-                        playerinfo[position].statset()
+                        playerinfo[position].statset(mastercards)
                         break
                     else:
                         pass
@@ -359,7 +245,8 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
     log.write (f"Expedition phase, delve {delveindicator}.\n")
     bl(1)
     position = 0
-    playlist = [x for x in range (players)] # this array lets the game know which players are in the game and which are not without jumbling the indices
+    playlist = [x for x in range (players)] # this array lets the game know which players are in the game and which are
+    # not without jumbling the indices
     if delveindicator == 1:
         heightlist = []
         for n in range(players):
@@ -465,7 +352,8 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
             for a in range (len(stacks)):
                 try:
                     if ((len(stacks[a]) == 1) or (len(stacks[a]) == 2 and '141' in playerinfo[playlist[position]].party) \
-                        or (len(stacks[a]) == 3 and '168' in playerinfo[playlist[position]].party)) and voidedflag == False:
+                        or (len(stacks[a]) == 3 and '168' in
+                            playerinfo[playlist[position]].party)) and voidedflag == False:
                         if mastercards[stacks[a][0]].type == 'Null':
                             airoll = randint (1,100)
                             try:
@@ -489,7 +377,8 @@ def expedition(players,playerinfo,expeditiondeck,delveindicator,firstout): #Cont
                                 if playerinfo[playlist[position]].recklessness <= airoll:
                                     discardpile.extend(stacks[a])
                                     stacks[a] = []
-                                    log.write(f"Player {playlist[position]+1} voids stack {stacks.index(stacks[a])+1}.\n\n")
+                                    log.write(f"Player {playlist[position]+1} voids "
+                                              f"stack {stacks.index(stacks[a])+1}.\n\n")
                                     voidedflag = True
                                 else:
                                     pass
@@ -605,7 +494,7 @@ def escapesequence(position,playerinfo,expeditiondeck,playlist,discardpile,delve
             mitigationtot = (enmit + stmit + mamit + mymit)
             finaldamage = startdamage - mitigationtot
             log.write(f"They mitigate {mitigationtot} hazard. {finaldamage} hazard remaining.\n")
-            if finaldamage > 0:
+            if finaldamage > 0: # hazard dice
                 log.write('Rolling dice.\n')
                 damage = 0
                 for hazdice in range(finaldamage):
@@ -671,7 +560,7 @@ def takestack(stacka,stackid,position,playerinfo,stackstats,playlist): #This fun
                 mitigationtot = (enmit + stmit + mamit + mymit)
                 finaldamage = startdamage - mitigationtot
                 log.write(f"They mitigate {mitigationtot} hazard. {finaldamage} hazard remaining.\n")
-                if finaldamage > 0:
+                if finaldamage > 0: # hazard dice
                     log.write('Rolling dice.\n')
                     damage = 0
                     for hazdice in range (finaldamage):
@@ -754,7 +643,7 @@ def takestack(stacka,stackid,position,playerinfo,stackstats,playlist): #This fun
         log.write (f"({position})\n")
     return stacka
 
-def stats(stacks,delveindicator):#this routine helps the AI make judgements about where to put cards
+def stats(stacks,delveindicator): # this routine helps the AI make judgements about where to put cards
     delvestring = 'delve'+str(delveindicator)
     statblock = []
     hazardstats = [0] * len(stacks)
@@ -767,10 +656,8 @@ def stats(stacks,delveindicator):#this routine helps the AI make judgements abou
             rewardstats[n] = substats.reward
             itemnum[n] = substats.items
             statblock.append(substats)
-        else:
-            hazard = 0
-            reward = 0
-            items = 0
+        else: # main case for returning stack stats
+            hazard, reward, items = 0,0,0
             ENhazard, SThazard, MAhazard, MYhazard = 0,0,0,0
             for x in range(len(stacks[n])):
                 if mastercards[stacks[n][x]].deck == 'Hazard':
@@ -819,13 +706,14 @@ def stats(stacks,delveindicator):#this routine helps the AI make judgements abou
             rewardstats[n] = reward
             itemnum[n] = items
             statblock.append(substats)
-    stackstats = [statblock,hazardstats.index(min(hazardstats)),rewardstats.index(max(rewardstats)),itemnum.index(min(itemnum))]
+    stackstats = [statblock,hazardstats.index(min(hazardstats)),
+                  rewardstats.index(max(rewardstats)),itemnum.index(min(itemnum))]
     return stackstats
 
 def resolve(playerinfo,delveindicator,deaths,totaltreasure,roundcounter,roundarray): # the resolution phase
     hr()
     for x in range (len(playerinfo)):
-        soldtreasure = playerinfo[x].selltreasure(delveindicator)
+        soldtreasure = playerinfo[x].selltreasure(delveindicator,mastercards)
         totaltreasure += soldtreasure
         if '142' in playerinfo[x].party:
             accountmoney = 10 * delveindicator
@@ -875,8 +763,10 @@ def loginit(currentdir,version,lognum,runs,playcount,setpath,randseed):
         while os.path.exists(f"{currentdir}{pathmod}{padstring}{pathincrement}/"):
             pathincrement += 1
             padstring = pathpadder (lognum,pathincrement)
-        if setpath == True:
+        if setpath == True and pathincrement != 10:
             pathincrement -= 1
+        elif setpath == True and pathincrement == 10:
+            pass
         elif setpath == False:
             pass
         pathmod = f"{pathmod}{padstring}{pathincrement}/"
@@ -899,7 +789,7 @@ def loginit(currentdir,version,lognum,runs,playcount,setpath,randseed):
         log.write(f"Log Number: {playcount+1}.\n")
     else:
         log.write('\n')
-    log.write(f"\'Too Greedily, Too Deep\' copyright Sydney Cardew.\n")
+    log.write(f"\'Too Greedily, Too Deep\' is copyright Sydney Cardew.\n")
     log.write(f"\nSeed: {randseed}\n")
     return [log,pathmod,today,padstring,logincrement]
 
@@ -1018,6 +908,7 @@ deaths,totaltreasure = 0,0
 roundarray = []
 while playing:
 
+
     pathpack = loginit(currentdir,version,lognum,runs,playcount,setpath,randseed)
     log, pathmod,today,padstring,logincrement = pathpack[0],pathpack[1],pathpack[2],pathpack[3],pathpack[4]
     setpath = True
@@ -1059,7 +950,6 @@ while playing:
         log.write(f"Player {n+1} has {playerinfo[n].recklessness} recklessness, {playerinfo[n].malice} "
                   f"malice and {playerinfo[n].greed} greed, is {playerinfo[n].height}cm tall and has picked "
                   f"{mastercards[playerinfo[n].party[0]].name}.\n")
-
     # DELVE 1
 
     hr()

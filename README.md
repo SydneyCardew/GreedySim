@@ -39,8 +39,11 @@ Description: First working version of GreedySim
 **Version 1.1.0**: 17/09/2020    
 Description: Aggregate data collection, mass logging improvements, logging format improvements, code-refactoring, improved documentation, escape sequence and voiding, many crashes and errors fixed or mitigated, implemented some special powers.
 
-**Version 1.1.5**: 21/09/2020
+**Version 1.1.5**: 21/09/2020    
 Description: Numerous bug fixes and tweaks, improvements to mass logging (including analysis of winning party compositions), and implementation of more Adventurer special rules.
+
+**Version 1.1.6**: 02/10/2020     
+Description: Code tweaking and refactoring, including moving classes into a seperate script. Fixed some minor bugs.
 
 ---
 
@@ -48,7 +51,7 @@ Description: Numerous bug fixes and tweaks, improvements to mass logging (includ
 
 * Fully implement game rules and elements not currently implemented:      
     * ~~Voiding stacks~~
-    * Item cards - *Party: cards are collected, but not used*
+    * Item cards - *Partly: cards are collected, but not used*
     * The Escape Sequence - *largely implemented*
     * Missions
     * The Loan Shark
